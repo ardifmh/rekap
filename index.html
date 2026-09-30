@@ -1,146 +1,6698 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stok Bumbu Dapur</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>SPPG CIKASO — Absensi & Gaji</title>
+
+<style>
+:root{
+    --blue:#1769e0;
+    --blue-dark:#0e55b7;
+    --blue-light:#eaf2ff;
+    --bg:#f4f7fb;
+    --card:#fff;
+    --text:#172033;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --green:#16834b;
+    --green-bg:#dcfce7;
+    --red:#d9363e;
+    --red-bg:#fee2e2;
+    --yellow:#92400e;
+    --yellow-bg:#fef3c7;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Segoe UI,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+    border:0;
+}
+
+.app{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:245px;
+    background:linear-gradient(180deg,#0e55b7,#153d7a);
+    color:white;
+    padding:20px 14px;
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    z-index:20;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:5px 8px 25px;
+}
+
+.brand-logo{
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    background:white;
+    padding:3px;
+}
+
+.brand-text b{
+    display:block;
+    font-size:15px;
+}
+
+.brand-text small{
+    opacity:.8;
+}
+
+.nav button{
+    width:100%;
+    padding:12px 14px;
+    margin:3px 0;
+    border-radius:10px;
+    background:transparent;
+    color:#dbeafe;
+    text-align:left;
+    font-weight:600;
+}
+
+.nav button:hover,
+.nav button.active{
+    background:rgba(255,255,255,.16);
+    color:white;
+}
+
+.main{
+    margin-left:245px;
+    width:calc(100% - 245px);
+    padding:24px;
+    max-width:1600px;
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.top h1{
+    margin:0;
+    font-size:25px;
+}
+
+.top p{
+    margin:5px 0 0;
+    color:var(--muted);
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    padding:10px 14px;
+    border-radius:9px;
+    background:#eef2f7;
+    color:#263246;
+    font-weight:700;
+}
+
+.btn.primary{
+    background:var(--blue);
+    color:white;
+}
+
+.btn.green{
+    background:var(--green-bg);
+    color:#166534;
+}
+
+.btn.danger{
+    background:var(--red-bg);
+    color:#991b1b;
+}
+
+.btn.small{
+    padding:7px 10px;
+    font-size:12px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:17px;
+    box-shadow:0 4px 14px rgba(20,35,60,.04);
+}
+
+.stat small{
+    color:var(--muted);
+}
+
+.stat strong{
+    display:block;
+    font-size:26px;
+    margin-top:8px;
+}
+
+.section{
+    margin-top:18px;
+}
+
+.section h2{
+    font-size:18px;
+    margin:0 0 12px;
+}
+
+.toolbar{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.toolbar label{
+    font-size:13px;
+    font-weight:700;
+}
+
+.toolbar input,
+.toolbar select,
+.form input,
+.form select{
+    border:1px solid #d6dbe3;
+    border-radius:9px;
+    padding:10px;
+    background:white;
+    outline:none;
+}
+
+.toolbar input:focus,
+.toolbar select:focus,
+.form input:focus,
+.form select:focus{
+    border-color:var(--blue);
+}
+
+.tablewrap{
+    overflow:auto;
+    background:white;
+    border:1px solid var(--line);
+    border-radius:12px;
+}
+
+.table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:760px;
+}
+
+.table th,
+.table td{
+    padding:10px 12px;
+    border-bottom:1px solid var(--line);
+    text-align:left;
+    white-space:nowrap;
+}
+
+.table th{
+    background:#f8fafc;
+    font-size:13px;
+    color:#475569;
+}
+
+.table tr:last-child td{
+    border-bottom:0;
+}
+
+.badge{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:800;
+}
+
+.badge.ok{
+    background:var(--green-bg);
+    color:#166534;
+}
+
+.badge.warn{
+    background:var(--yellow-bg);
+    color:#92400e;
+}
+
+.note{
+    padding:12px;
+    border-radius:10px;
+    background:#eff6ff;
+    color:#1e40af;
+    font-size:13px;
+}
+
+.empty{
+    padding:30px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.division-row td{
+    background:var(--blue-light)!important;
+    color:#174ea6;
+    font-weight:900;
+    border-top:2px solid #bfdbfe!important;
+}
+
+.division-label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.division-dot{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:var(--blue);
+}
+
+.abs{
+    width:35px;
+    height:35px;
+    border-radius:8px;
+    font-weight:800;
+    background:var(--red-bg);
+    color:#991b1b;
+}
+
+.abs.on{
+    background:var(--green-bg);
+    color:#166534;
+}
+
+.abs.izin{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.abs.sakit{
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+.abs.alpa{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.abs.lainnya{
+    background:#ede9fe;
+    color:#5b21b6;
+}
+
+.history-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:12px;
+}
+
+.history-header h2{
+    margin:0;
+}
+
+.history-subtitle{
+    margin:5px 0 0;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.history-table{
+    min-width:760px;
+}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.45);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    background:white;
+    border-radius:16px;
+    width:min(560px,100%);
+    padding:20px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+.form{
+    display:grid;
+    gap:12px;
+}
+
+.form label{
+    font-size:13px;
+    font-weight:700;
+    color:#475569;
+}
+
+.form input,
+.form select{
+    width:100%;
+    margin-top:5px;
+}
+
+.modal-footer{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:16px;
+}
+
+/* STATUS MODAL */
+
+.status-options{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+    margin:15px 0;
+}
+
+.status-btn{
+    padding:12px;
+    border-radius:10px;
+    font-weight:700;
+}
+
+.status-hadir{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status-izin{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.status-sakit{
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+.status-alpa{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.status-lainnya{
+    background:#ede9fe;
+    color:#5b21b6;
+}
+
+/* FIREBASE */
+
+.firebase-status{
+    position:fixed;
+    right:18px;
+    top:18px;
+    z-index:200;
+    padding:7px 10px;
+    border-radius:999px;
+    background:#fef3c7;
+    color:#92400e;
+    font-size:12px;
+    font-weight:800;
+    box-shadow:0 4px 12px rgba(0,0,0,.12);
+}
+
+/* SLIP PREVIEW */
+
+.slip-preview{
+    background:white;
+    border:1px solid #222;
+    padding:15px;
+    max-width:850px;
+    margin:auto;
+}
+
+.receipt-head{
+    display:grid;
+    grid-template-columns:60px 1fr 230px;
+    gap:10px;
+    align-items:center;
+    border-bottom:1px solid #222;
+    padding-bottom:8px;
+}
+
+.receipt-logo{
+    width:55px;
+    height:55px;
+}
+
+.receipt-logo img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.receipt-org{
+    font-size:14px;
+    line-height:1.25;
+}
+
+.receipt-org b{
+    display:block;
+}
+
+.receipt-org strong{
+    display:block;
+}
+
+.receipt-title{
+    font-size:12px;
+    line-height:1.5;
+}
+
+.receipt-title>b{
+    display:block;
+    font-size:14px;
+    margin-bottom:4px;
+}
+
+.receipt-info{
+    padding:10px 0;
+    font-size:12px;
+}
+
+.receipt-info > div{
+    display:grid;
+    grid-template-columns:100px 15px 1fr;
+    min-height:22px;
+}
+
+.receipt-total{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-top:1px solid #222;
+    border-bottom:1px solid #222;
+    padding:8px 10px;
+    font-size:13px;
+}
+
+.receipt-total strong{
+    font-size:14px;
+}
+
+.receipt-words{
+    text-align:center;
+    font-weight:800;
+    font-style:italic;
+    padding:8px;
+    border-bottom:1px solid #222;
+    text-transform:uppercase;
+    font-size:12px;
+}
+
+.receipt-signatures{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    padding-top:10px;
+    text-align:center;
+    font-size:11px;
+}
+
+.signature-space{
+    height:55px;
+}
+
+.signature-col b{
+    display:block;
+    text-decoration:underline;
+}
+
+.signature-col span{
+    display:block;
+    margin-top:3px;
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    z-index:300;
+    background:#166534;
+    color:white;
+    padding:12px 16px;
+    border-radius:10px;
+    box-shadow:0 8px 24px rgba(0,0,0,.18);
+    font-weight:700;
+    opacity:0;
+    transform:translateY(10px);
+    pointer-events:none;
+    transition:.25s;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+    .sidebar{
+        position:static;
+        width:100%;
+        height:auto;
+    }
+
+    .app{
+        display:block;
+    }
+
+    .main{
+        margin:0;
+        width:100%;
+        padding:15px;
+    }
+
+    .nav{
+        display:flex;
+        overflow:auto;
+    }
+
+    .nav button{
+        min-width:max-content;
+    }
+
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .receipt-head{
+        grid-template-columns:50px 1fr;
+    }
+
+    .receipt-title{
+        grid-column:1/-1;
+    }
+}
+
+@media(max-width:560px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .top{
+        align-items:flex-start;
+        gap:10px;
+        flex-direction:column;
+    }
+
+    .receipt-signatures{
+        font-size:9px;
+    }
+
+    .signature-space{
+        height:40px;
+    }
+}
+
+/* PRINT SLIP */
+
+@media print{
+
+    body{
+        background:white;
+    }
+
+    .sidebar,
+    .top,
+    .no-print{
+        display:none!important;
+    }
+
+    .main{
+        margin:0;
+        width:100%;
+        padding:0;
+    }
+
+}
+
+/* PRINT SLIP 4 VERTIKAL */
+
+.print-sheet{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:3mm;
+    page-break-after:always;
+    break-after:page;
+}
+
+.print-sheet:last-child{
+    page-break-after:auto;
+    break-after:auto;
+}
+
+.print-slip{
+    width:100%;
+    box-sizing:border-box;
+    border:1px solid #222;
+    padding:3mm;
+    background:white;
+    overflow:hidden;
+    break-inside:avoid;
+    page-break-inside:avoid;
+}
+
+.print-slip .receipt-head{
+    grid-template-columns:17mm 1fr 57mm;
+    gap:2mm;
+    padding-bottom:1.5mm;
+}
+
+.print-slip .receipt-logo{
+    width:15mm;
+    height:15mm;
+}
+
+.print-slip .receipt-org{
+    font-size:8px;
+}
+
+.print-slip .receipt-org b,
+.print-slip .receipt-org strong{
+    font-size:9px;
+}
+
+.print-slip .receipt-title{
+    font-size:7px;
+}
+
+.print-slip .receipt-title>b{
+    font-size:9px;
+}
+
+.print-slip .receipt-info{
+    font-size:7px;
+    padding:1.5mm 0;
+}
+
+.print-slip .receipt-info > div{
+    grid-template-columns:24mm 3mm 1fr;
+    min-height:3.2mm;
+}
+
+.print-slip .receipt-total{
+    font-size:8px;
+    padding:1.2mm 2mm;
+}
+
+.print-slip .receipt-total strong{
+    font-size:9px;
+}
+
+.print-slip .receipt-words{
+    font-size:7px;
+    padding:1mm;
+}
+
+.print-slip .receipt-signatures{
+    font-size:6.7px;
+    padding-top:1.5mm;
+}
+
+.print-slip .signature-space{
+    height:7mm;
+}
+
+.print-slip .signature-col b{
+    font-size:6.7px;
+    white-space:nowrap;
+}
+
+@page{
+    size:A4 portrait;
+    margin:6mm;
+}
+</style>
 </head>
+
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-icon">🌿</div>
-        <div>
-          <h1>Stok Bumbu</h1>
-          <span>Dapur Manager</span>
-        </div>
-      </div>
 
-      <nav>
-        <button class="nav-item active" data-page="dashboard">🏠 <span>Dashboard</span></button>
-        <button class="nav-item" data-page="master">🧂 <span>Master Bumbu</span></button>
-        <button class="nav-item" data-page="masuk">📥 <span>Stok Masuk</span></button>
-        <button class="nav-item" data-page="keluar">📤 <span>Stok Keluar</span></button>
-        <button class="nav-item" data-page="riwayat">📋 <span>Riwayat</span></button>
-      </nav>
+<div class="app">
 
-      <div class="sidebar-bottom">
-        <button class="side-action" id="backupBtn">💾 Backup Data</button>
-        <label class="side-action file-label">📂 Restore Data
-          <input type="file" id="restoreInput" accept=".json">
-        </label>
-        <button class="side-action danger" id="resetBtn">♻️ Reset Semua Data</button>
-      </div>
-    </aside>
+<aside class="sidebar">
 
-    <main class="main">
-      <header class="topbar">
-        <div>
-          <button class="mobile-menu" id="mobileMenu">☰</button>
-          <h2 id="pageTitle">Dashboard</h2>
-          <p>Kelola persediaan bumbu dapur dengan mudah.</p>
-        </div>
-        <div class="top-actions">
-          <button class="btn btn-light" id="quickMasuk">＋ Stok Masuk</button>
-          <button class="btn btn-primary" id="quickKeluar">− Stok Keluar</button>
-        </div>
-      </header>
+    <div class="brand">
 
-      <section id="dashboard" class="page active">
-        <div class="cards">
-          <div class="stat-card"><div class="stat-icon green">🧂</div><div><span>Jenis Bumbu</span><strong id="totalJenis">0</strong></div></div>
-          <div class="stat-card"><div class="stat-icon blue">📦</div><div><span>Total Stok</span><strong id="totalStok">0</strong></div></div>
-          <div class="stat-card"><div class="stat-icon orange">📥</div><div><span>Stok Masuk</span><strong id="totalMasuk">0</strong></div></div>
-          <div class="stat-card"><div class="stat-icon red">📤</div><div><span>Stok Keluar</span><strong id="totalKeluar">0</strong></div></div>
+        <img
+            id="appLogo"
+            class="brand-logo"
+            alt="Logo SPPG"
+        >
+
+        <div class="brand-text">
+            <b>SPPG CIKASO</b>
+            <small>Absensi & Gaji</small>
         </div>
 
-        <div class="grid-2">
-          <div class="panel">
-            <div class="panel-head"><div><h3>Status Stok</h3><p>Perhatian untuk bumbu yang mendekati batas minimum.</p></div><button class="btn btn-small" data-page="master">Lihat Semua</button></div>
-            <div id="stockAlert"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><div><h3>Transaksi Terbaru</h3><p>Aktivitas stok terakhir.</p></div><button class="btn btn-small" data-page="riwayat">Riwayat</button></div>
-            <div id="recentTransactions"></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="master" class="page">
-        <div class="panel">
-          <div class="panel-head">
-            <div><h3>Master Bumbu</h3><p>Daftar seluruh bumbu yang dikelola.</p></div>
-            <button class="btn btn-primary" id="addBumbuBtn">＋ Tambah Bumbu</button>
-          </div>
-          <div class="toolbar"><input class="search" id="masterSearch" placeholder="🔎 Cari kode atau nama bumbu..."></div>
-          <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama Bumbu</th><th>Satuan</th><th>Min. Stok</th><th>Stok Saat Ini</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="masterBody"></tbody></table></div>
-        </div>
-      </section>
-
-      <section id="masuk" class="page">
-        <div class="panel form-panel">
-          <div class="panel-head"><div><h3>Input Stok Masuk</h3><p>Tambahkan stok bumbu yang masuk.</p></div></div>
-          <form id="masukForm" class="form-grid">
-            <label>Tanggal<input type="date" id="masukTanggal" required></label>
-            <label>Kode Bumbu<input list="kodeList" id="masukKode" placeholder="Contoh: BMB001" required></label>
-            <label>Nama Bumbu<input id="masukNama" readonly placeholder="Nama otomatis"></label>
-            <label>Jumlah<input type="number" id="masukJumlah" min="0.01" step="0.01" required></label>
-            <label>Satuan<input id="masukSatuan" readonly placeholder="Otomatis"></label>
-            <label>Keterangan<input id="masukKeterangan" placeholder="Opsional"></label>
-            <div class="form-actions"><button type="reset" class="btn btn-light">Batal</button><button class="btn btn-primary">Simpan Stok Masuk</button></div>
-          </form>
-        </div>
-      </section>
-
-      <section id="keluar" class="page">
-        <div class="panel form-panel">
-          <div class="panel-head"><div><h3>Input Stok Keluar</h3><p>Catat penggunaan atau pengeluaran bumbu.</p></div></div>
-          <form id="keluarForm" class="form-grid">
-            <label>Tanggal<input type="date" id="keluarTanggal" required></label>
-            <label>Kode Bumbu<input list="kodeList" id="keluarKode" placeholder="Contoh: BMB001" required></label>
-            <label>Nama Bumbu<input id="keluarNama" readonly placeholder="Nama otomatis"></label>
-            <label>Jumlah<input type="number" id="keluarJumlah" min="0.01" step="0.01" required></label>
-            <label>Satuan<input id="keluarSatuan" readonly placeholder="Otomatis"></label>
-            <label>Keterangan<input id="keluarKeterangan" placeholder="Opsional"></label>
-            <div class="form-actions"><button type="reset" class="btn btn-light">Batal</button><button class="btn btn-primary">Simpan Stok Keluar</button></div>
-          </form>
-        </div>
-      </section>
-
-      <section id="riwayat" class="page">
-        <div class="panel">
-          <div class="panel-head"><div><h3>Riwayat Transaksi</h3><p>Semua pergerakan stok masuk dan keluar.</p></div></div>
-          <div class="toolbar filters">
-            <input class="search" id="historySearch" placeholder="🔎 Cari kode, nama, atau keterangan...">
-            <select id="historyType"><option value="">Semua transaksi</option><option value="masuk">Stok Masuk</option><option value="keluar">Stok Keluar</option></select>
-          </div>
-          <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Kode</th><th>Nama Bumbu</th><th>Jumlah</th><th>Satuan</th><th>Keterangan</th><th>Aksi</th></tr></thead><tbody id="historyBody"></tbody></table></div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <datalist id="kodeList"></datalist>
-
-  <div class="modal-backdrop" id="modalBackdrop">
-    <div class="modal">
-      <div class="modal-head"><h3 id="modalTitle">Tambah Bumbu</h3><button class="close" id="closeModal">×</button></div>
-      <form id="bumbuForm">
-        <input type="hidden" id="editId">
-        <label>Kode Bumbu<input id="bumbuKode" required maxlength="30" placeholder="BMB001"></label>
-        <label>Nama Bumbu<input id="bumbuNama" required placeholder="Bawang Merah"></label>
-        <div class="two-col">
-          <label>Satuan<select id="bumbuSatuan"><option>Kg</option><option>Gram</option><option>Liter</option><option>Botol</option><option>Pack</option><option>Dus</option><option>Pcs</option></select></label>
-          <label>Stok Minimum<input type="number" id="bumbuMin" min="0" step="0.01" value="1" required></label>
-        </div>
-        <label>Stok Awal<input type="number" id="bumbuStok" min="0" step="0.01" value="0" required></label>
-        <div class="form-actions"><button type="button" class="btn btn-light" id="cancelModal">Batal</button><button class="btn btn-primary">Simpan</button></div>
-      </form>
     </div>
-  </div>
 
-  <div class="toast" id="toast"></div>
-  <script src="app.js"></script>
+    <div class="nav">
+
+        <button data-page="dashboard" class="active">
+            🏠 Dashboard
+        </button>
+
+        <button data-page="relawan">
+            👥 Data Relawan
+        </button>
+
+        <button data-page="absensi">
+            📅 Rekap Absensi
+        </button>
+
+        <button data-page="gaji">
+            💰 Rekap Gaji
+        </button>
+
+        <button data-page="laporan">
+            📊 Laporan / Rekap
+        </button>
+
+    </div>
+
+</aside>
+
+<main class="main">
+
+    <div class="top">
+
+        <div>
+            <h1 id="title">
+                Dashboard
+            </h1>
+
+            <p id="subtitle">
+                Kelola absensi dan gaji secara otomatis.
+            </p>
+        </div>
+
+        <div class="actions no-print">
+
+            <button
+                class="btn"
+                onclick="exportJSON()"
+            >
+                Backup Data
+            </button>
+
+            <button
+                class="btn danger"
+                onclick="resetData()"
+            >
+                Reset Data
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="content"></div>
+
+</main>
+
+</div>
+
+
+<div
+    id="firebaseStatus"
+    class="firebase-status"
+    style="display:none"
+>
+    Firebase
+</div>
+
+
+<div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+></div>
+
+
+<!-- MODAL RELAWAN -->
+
+<div
+    class="modal"
+    id="modalRelawan"
+>
+
+    <div class="modal-box">
+
+        <h2 id="modalTitle">
+            Data Relawan
+        </h2>
+
+        <div class="form">
+
+            <label>
+                Nama
+                <input id="fName">
+            </label>
+
+            <label>
+                Jabatan / Divisi
+                <input id="fJob">
+            </label>
+
+            <label>
+                Tarif per Hari
+                <input
+                    id="fRate"
+                    type="number"
+                    min="0"
+                >
+            </label>
+
+            <label>
+                Korve / GC
+                <input
+                    id="fKorve"
+                    type="number"
+                    min="0"
+                >
+            </label>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                class="btn"
+                onclick="closeRelawanModal()"
+            >
+                Batal
+            </button>
+
+            <button
+                class="btn primary"
+                onclick="savePerson()"
+            >
+                Simpan
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL ABSENSI -->
+
+<div
+    class="modal"
+    id="attendanceModal"
+>
+
+    <div class="modal-box">
+
+        <h2>
+            Ubah Status Absensi
+        </h2>
+
+        <p
+            id="attendanceInfo"
+            class="note"
+        ></p>
+
+        <div class="status-options">
+
+            <button
+                class="status-btn status-hadir"
+                onclick="setAttendance('HADIR')"
+            >
+                ✓ Hadir
+            </button>
+
+            <button
+                class="status-btn status-izin"
+                onclick="setAttendance('IZIN')"
+            >
+                Izin
+            </button>
+
+            <button
+                class="status-btn status-sakit"
+                onclick="setAttendance('SAKIT')"
+            >
+                Sakit
+            </button>
+
+            <button
+                class="status-btn status-alpa"
+                onclick="setAttendance('ALPA')"
+            >
+                Alpa
+            </button>
+
+            <button
+                class="status-btn status-lainnya"
+                onclick="setAttendance('LAINNYA')"
+            >
+                Lainnya
+            </button>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                class="btn"
+                onclick="closeAttendanceModal()"
+            >
+                Batal
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore-compat.js"></script>
+
+
+<script>
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyC3KjTxrTfIPv4Amet5S35WDEl4mSRWTjo",
+
+    authDomain:
+        "absensi-2cd1d.firebaseapp.com",
+
+    projectId:
+        "absensi-2cd1d",
+
+    storageBucket:
+        "absensi-2cd1d.firebasestorage.app",
+
+    messagingSenderId:
+        "1089163473824",
+
+    appId:
+        "1:1089163473824:web:f109a339b27fc5cfc4aac5"
+
+};
+
+
+let firebaseApp = null;
+let firebaseAuth = null;
+let firestore = null;
+let firebaseUser = null;
+let firebaseReady = false;
+let firebaseSyncing = false;
+let firebaseSaveTimer = null;
+let firebaseUnsubscribe = null;
+
+
+function setFirebaseStatus(text,ok=false){
+
+    const el =
+        document.getElementById(
+            "firebaseStatus"
+        );
+
+    if(!el) return;
+
+    el.textContent = text;
+
+    el.style.display = "block";
+
+    el.style.background =
+        ok ? "#dcfce7" : "#fef3c7";
+
+    el.style.color =
+        ok ? "#166534" : "#92400e";
+}
+
+
+try{
+
+    firebaseApp =
+        firebase.initializeApp(
+            firebaseConfig
+        );
+
+    firebaseAuth =
+        firebase.auth();
+
+    firestore =
+        firebase.firestore();
+
+}catch(error){
+
+    console.error(error);
+
+}
+
+
+async function initFirebase(){
+
+    if(
+        !firebaseAuth ||
+        !firestore
+    ){
+
+        setFirebaseStatus(
+            "⚠ Mode Lokal"
+        );
+
+        return;
+    }
+
+    try{
+
+        await firebaseAuth
+            .signInAnonymously();
+
+        firebaseAuth
+            .onAuthStateChanged(
+                async user => {
+
+                    if(!user) return;
+
+                    firebaseUser = user;
+
+                    firebaseReady = true;
+
+                    setFirebaseStatus(
+                        "☁ Firebase Terhubung",
+                        true
+                    );
+
+                    await loadFromFirebase();
+
+                    startRealtimeSync();
+
+                }
+            );
+
+    }catch(error){
+
+        console.error(
+            "Firebase Auth:",
+            error
+        );
+
+        setFirebaseStatus(
+            "⚠ Mode Lokal"
+        );
+
+        showToast(
+            "Firebase belum dapat digunakan."
+        );
+
+    }
+
+}
+
+
+async function loadFromFirebase(){
+
+    if(
+        !firebaseReady ||
+        !firestore ||
+        !firebaseUser
+    ) return;
+
+    firebaseSyncing = true;
+
+    try{
+
+        const ref =
+            firestore
+                .collection("sppgCikaso")
+                .doc("appState");
+
+        const snap =
+            await ref.get();
+
+        if(
+            snap.exists &&
+            snap.data().state
+        ){
+
+            const remote =
+                snap.data().state;
+
+            if(
+                remote &&
+                Array.isArray(
+                    remote.people
+                )
+            ){
+
+                db = remote;
+
+                normalizeDB();
+
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(db)
+                );
+
+                showPage(
+                    currentPage
+                );
+
+                showToast(
+                    "☁ Data dimuat dari Firebase."
+                );
+
+            }
+
+        }else{
+
+            await pushToFirebase(true);
+
+        }
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+        showToast(
+            "⚠ Firebase gagal dibaca. Data lokal digunakan."
+        );
+
+    }finally{
+
+        firebaseSyncing = false;
+
+    }
+
+}
+
+
+function startRealtimeSync(){
+
+    if(
+        !firebaseReady ||
+        !firestore ||
+        firebaseUnsubscribe
+    ) return;
+
+    const ref =
+        firestore
+            .collection("sppgCikaso")
+            .doc("appState");
+
+    firebaseUnsubscribe =
+        ref.onSnapshot(
+
+            snap => {
+
+                if(
+                    firebaseSyncing ||
+                    !snap.exists
+                ) return;
+
+                const remote =
+                    snap.data().state;
+
+                if(
+                    !remote ||
+                    !Array.isArray(
+                        remote.people
+                    )
+                ) return;
+
+                db = remote;
+
+                normalizeDB();
+
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(db)
+                );
+
+                showPage(
+                    currentPage
+                );
+
+            },
+
+            error => {
+
+                console.error(
+                    error
+                );
+
+                setFirebaseStatus(
+                    "⚠ Sinkronisasi bermasalah"
+                );
+
+            }
+
+        );
+
+}
+
+
+async function pushToFirebase(
+    initial=false
+){
+
+    if(
+        !firebaseReady ||
+        !firestore ||
+        !firebaseUser
+    ) return false;
+
+    try{
+
+        await firestore
+            .collection("sppgCikaso")
+            .doc("appState")
+            .set({
+
+                state:db,
+
+                updatedAt:
+                    firebase.firestore
+                        .FieldValue
+                        .serverTimestamp(),
+
+                updatedBy:
+                    firebaseUser.uid
+
+            });
+
+        if(!initial){
+
+            showToast(
+                "☁ Data tersimpan ke Firebase."
+            );
+
+        }
+
+        return true;
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+        showToast(
+            "⚠ Gagal menyimpan ke Firebase."
+        );
+
+        return false;
+
+    }
+
+}
+
+
+function queueFirebaseSave(){
+
+    if(!firebaseReady) return;
+
+    clearTimeout(
+        firebaseSaveTimer
+    );
+
+    firebaseSaveTimer =
+        setTimeout(
+            () => pushToFirebase(false),
+            400
+        );
+
+}
+
+</script>
+
+
+<script>
+
+/* ======================================================
+   LOGO APLIKASI
+   ====================================================== */
+
+const LOGO_DATA =
+"data:image/svg+xml;charset=UTF-8," +
+encodeURIComponent(`
+
+<svg
+ xmlns="http://www.w3.org/2000/svg"
+ viewBox="0 0 512 512"
+>
+
+<rect
+ width="512"
+ height="512"
+ rx="90"
+ fill="white"
+/>
+
+<circle
+ cx="256"
+ cy="230"
+ r="180"
+ fill="#0e55b7"
+/>
+
+<circle
+ cx="256"
+ cy="230"
+ r="155"
+ fill="white"
+/>
+
+<circle
+ cx="256"
+ cy="160"
+ r="45"
+ fill="#1769e0"
+/>
+
+<path
+ d="M145 280
+ C160 215 220 210 256 250
+ C292 210 352 215 367 280
+ L367 315
+ L145 315Z"
+ fill="#1769e0"
+/>
+
+<rect
+ x="105"
+ y="255"
+ width="145"
+ height="155"
+ rx="18"
+ fill="white"
+ stroke="#1769e0"
+ stroke-width="12"
+/>
+
+<path
+ d="M135 300
+ l18 18
+ 35-40
+ M135 350
+ l18 18
+ 35-40
+ M135 400
+ l18 18
+ 35-40"
+ fill="none"
+ stroke="#1769e0"
+ stroke-width="12"
+ stroke-linecap="round"
+ stroke-linejoin="round"
+/>
+
+<g fill="#f5a623">
+
+<ellipse
+ cx="345"
+ cy="345"
+ rx="60"
+ ry="18"
+/>
+
+<rect
+ x="285"
+ y="345"
+ width="120"
+ height="35"
+/>
+
+<ellipse
+ cx="345"
+ cy="380"
+ rx="60"
+ ry="18"
+/>
+
+<rect
+ x="285"
+ y="380"
+ width="120"
+ height="35"
+/>
+
+<ellipse
+ cx="345"
+ cy="415"
+ rx="60"
+ ry="18"
+/>
+
+</g>
+
+<circle
+ cx="400"
+ cy="380"
+ r="40"
+ fill="white"
+ stroke="#f5a623"
+ stroke-width="8"
+/>
+
+<text
+ x="400"
+ y="395"
+ text-anchor="middle"
+ font-family="Arial"
+ font-size="38"
+ font-weight="bold"
+ fill="#b86b00"
+>
+Rp
+</text>
+
+<text
+ x="256"
+ y="465"
+ text-anchor="middle"
+ font-family="Arial"
+ font-size="56"
+ font-weight="900"
+ fill="#0e55b7"
+>
+SPPG
+</text>
+
+<rect
+ x="150"
+ y="470"
+ width="212"
+ height="32"
+ rx="16"
+ fill="#1769e0"
+/>
+
+<text
+ x="256"
+ y="493"
+ text-anchor="middle"
+ font-family="Arial"
+ font-size="20"
+ font-weight="bold"
+ fill="white"
+>
+CIKASO
+</text>
+
+</svg>
+`);
+
+document.getElementById(
+    "appLogo"
+).src = "logo-bgn-transparent.png";
+
+
+/* ======================================================
+   DATA
+   ====================================================== */
+
+const STORAGE_KEY =
+    "sppg_cikaso_absengaji_v2";
+
+
+const DEFAULT_DATA = {
+
+    periodeStart:
+        "2026-09-13",
+
+    periodeEnd:
+        "2026-09-25",
+
+    people:[],
+
+    periodHistory:[]
+
+};
+
+
+let db =
+    loadLocalData();
+
+let currentPage =
+    "dashboard";
+
+let editIndex =
+    -1;
+
+let attendanceTarget =
+    {
+        index:null,
+        day:null
+    };
+
+
+/* ======================================================
+   LOAD
+   ====================================================== */
+
+function loadLocalData(){
+
+    try{
+
+        const saved =
+            JSON.parse(
+                localStorage.getItem(
+                    STORAGE_KEY
+                )
+            );
+
+        if(
+            saved &&
+            Array.isArray(
+                saved.people
+            )
+        ){
+
+            saved.periodHistory =
+                Array.isArray(
+                    saved.periodHistory
+                )
+                ? saved.periodHistory
+                : [];
+
+            normalizeDBObject(
+                saved
+            );
+
+            return saved;
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+    const data =
+        JSON.parse(
+            JSON.stringify(
+                DEFAULT_DATA
+            )
+        );
+
+    normalizeDBObject(data);
+
+    return data;
+
+}
+
+
+function normalizeDBObject(data){
+
+    if(
+        !Array.isArray(
+            data.people
+        )
+    ){
+
+        data.people = [];
+
+    }
+
+    if(
+        !Array.isArray(
+            data.periodHistory
+        )
+    ){
+
+        data.periodHistory = [];
+
+    }
+
+    const n =
+        periodLengthFrom(
+            data.periodeStart,
+            data.periodeEnd
+        );
+
+    data.people.forEach(
+        person => {
+
+            person.name =
+                person.name || "";
+
+            person.jabatan =
+                person.jabatan || "";
+
+            person.tarif =
+                Number(
+                    person.tarif
+                ) || 0;
+
+            person.korve =
+                Number(
+                    person.korve
+                ) || 0;
+
+            person.days =
+                Array.from(
+                    {length:n},
+                    (_,i) =>
+                        Array.isArray(
+                            person.days
+                        )
+                        ? (
+                            person.days[i] ??
+                            0
+                        )
+                        : 0
+                );
+
+            person.reasons =
+                Array.from(
+                    {length:n},
+                    (_,i) =>
+                        Array.isArray(
+                            person.reasons
+                        )
+                        ? (
+                            person.reasons[i] ??
+                            ""
+                        )
+                        : ""
+                );
+
+        }
+    );
+
+}
+
+
+function normalizeDB(){
+
+    normalizeDBObject(db);
+
+}
+
+
+/* ======================================================
+   SAVE
+   ====================================================== */
+
+function save(){
+
+    try{
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(db)
+        );
+
+        queueFirebaseSave();
+
+        return true;
+
+    }catch(error){
+
+        alert(
+            "Data tidak dapat disimpan."
+        );
+
+        return false;
+
+    }
+
+}
+
+
+/* ======================================================
+   UTILITAS
+   ====================================================== */
+
+function periodLength(){
+
+    return periodLengthFrom(
+        db.periodeStart,
+        db.periodeEnd
+    );
+
+}
+
+
+function periodLengthFrom(
+    start,
+    end
+){
+
+    if(!start || !end)
+        return 1;
+
+    const a =
+        new Date(
+            start+"T00:00:00"
+        );
+
+    const b =
+        new Date(
+            end+"T00:00:00"
+        );
+
+    return Math.max(
+        1,
+        Math.floor(
+            (
+                b-a
+            ) /
+            86400000
+        )+1
+    );
+
+}
+
+
+function money(value){
+
+    return new Intl.NumberFormat(
+        "id-ID",
+        {
+            style:"currency",
+            currency:"IDR",
+            maximumFractionDigits:0
+        }
+    ).format(
+        Number(value)||0
+    );
+
+}
+
+
+function number(value){
+
+    return new Intl.NumberFormat(
+        "id-ID"
+    ).format(
+        Number(value)||0
+    );
+
+}
+
+
+function fmtDate(value){
+
+    if(!value)
+        return "-";
+
+    return new Date(
+        value+"T00:00:00"
+    ).toLocaleDateString(
+        "id-ID",
+        {
+            day:"2-digit",
+            month:"long",
+            year:"numeric"
+        }
+    );
+
+}
+
+
+function dateLocal(date){
+
+    return date.toLocaleDateString(
+        "id-ID",
+        {
+            day:"2-digit",
+            month:"long",
+            year:"numeric"
+        }
+    );
+
+}
+
+
+function esc(value){
+
+    return String(
+        value ?? ""
+    ).replace(
+        /[&<>"']/g,
+        char => ({
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#39;"
+        }[char])
+    );
+
+}
+
+
+function showToast(message){
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    toast.textContent =
+        message;
+
+    toast.classList.add(
+        "show"
+    );
+
+    clearTimeout(
+        window.toastTimer
+    );
+
+    window.toastTimer =
+        setTimeout(
+            () => {
+                toast.classList.remove(
+                    "show"
+                );
+            },
+            2800
+        );
+
+}
+
+
+function getPeriodText(){
+
+    return (
+        fmtDate(
+            db.periodeStart
+        )
+        +
+        " — "
+        +
+        fmtDate(
+            db.periodeEnd
+        )
+    );
+
+}
+
+
+/* ======================================================
+   DIVISI
+   ====================================================== */
+
+function divisionOf(job){
+
+    const j =
+        String(
+            job || ""
+        ).toLowerCase();
+
+    if(
+        j.includes("security") ||
+        j.includes("satpam")
+    )
+        return "SECURITY";
+
+    if(
+        j.includes("persiapan")
+    )
+        return "PERSIAPAN";
+
+    if(
+        j.includes("pengolahan") ||
+        j.includes("masak")
+    )
+        return "PENGOLAHAN";
+
+    if(
+        j.includes("pemorsian") ||
+        j.includes("porsi")
+    )
+        return "PEMORSIAN";
+
+    if(
+        j.includes("distribusi") ||
+        j.includes("driver") ||
+        j.includes("supir")
+    )
+        return "DISTRIBUSI";
+
+    if(
+        j.includes("pencucian") ||
+        j.includes("cuci")
+    )
+        return "PENCUCIAN";
+
+    if(
+        j.includes("kebersihan") ||
+        j.includes("cleaning")
+    )
+        return "KEBERSIHAN";
+
+    if(
+        j.includes("asisten") ||
+        j.includes("lapangan")
+    )
+        return "ASISTEN LAPANGAN";
+
+    return "LAINNYA";
+
+}
+
+
+/* ======================================================
+   ABSENSI / GAJI
+   ====================================================== */
+
+function hadir(person){
+
+    return (
+        person.days || []
+    ).filter(
+        x => Number(x) === 1
+    ).length;
+
+}
+
+
+function upah(person){
+
+    return (
+        hadir(person) *
+        (
+            Number(
+                person.tarif
+            ) || 0
+        )
+    );
+
+}
+
+
+function totalGaji(person){
+
+    return (
+        upah(person)
+        +
+        (
+            Number(
+                person.korve
+            ) || 0
+        )
+    );
+
+}
+
+
+/* ======================================================
+   NAVIGASI
+   ====================================================== */
+
+document
+    .querySelectorAll(
+        ".nav button"
+    )
+    .forEach(
+        button => {
+
+            button.onclick =
+                () => showPage(
+                    button.dataset.page
+                );
+
+        }
+    );
+
+
+function showPage(page){
+
+    currentPage =
+        page;
+
+    document
+        .querySelectorAll(
+            ".nav button"
+        )
+        .forEach(
+            button => {
+
+                button.classList.toggle(
+                    "active",
+                    button.dataset.page === page
+                );
+
+            }
+        );
+
+    const titles = {
+
+        dashboard:[
+            "Dashboard",
+            "Ringkasan absensi dan pembayaran"
+        ],
+
+        relawan:[
+            "Data Relawan",
+            "Master data relawan"
+        ],
+
+        absensi:[
+            "Rekap Absensi",
+            "Kelola absensi berdasarkan periode dan divisi"
+        ],
+
+        gaji:[
+            "Rekap Gaji",
+            "Perhitungan gaji berdasarkan absensi"
+        ],
+
+        laporan:[
+            "Laporan / Rekap",
+            "Rekap keseluruhan karyawan"
+        ]
+
+    };
+
+    document.getElementById(
+        "title"
+    ).textContent =
+        titles[page][0];
+
+    document.getElementById(
+        "subtitle"
+    ).textContent =
+        titles[page][1];
+
+
+    if(page === "dashboard")
+        renderDashboard();
+
+    if(page === "relawan")
+        renderRelawan();
+
+    if(page === "absensi")
+        renderAbsensi();
+
+    if(page === "gaji")
+        renderGaji();
+
+    if(page === "laporan")
+        renderLaporan();
+
+}
+
+
+/* ======================================================
+   DASHBOARD
+   ====================================================== */
+
+function renderDashboard(){
+
+    const totalHadir =
+        db.people.reduce(
+            (
+                total,
+                person
+            ) =>
+                total +
+                hadir(person),
+            0
+        );
+
+    const totalPembayaran =
+        db.people.reduce(
+            (
+                total,
+                person
+            ) =>
+                total +
+                totalGaji(person),
+            0
+        );
+
+
+    const histories =
+        Array.isArray(
+            db.periodHistory
+        )
+        ? db.periodHistory
+        : [];
+
+
+    let historyHTML = "";
+
+
+    if(
+        histories.length === 0
+    ){
+
+        historyHTML = `
+
+        <tr>
+
+            <td
+                colspan="5"
+                class="empty"
+            >
+                Belum ada periode
+                yang tersimpan.
+            </td>
+
+        </tr>
+
+        `;
+
+    }else{
+
+        historyHTML =
+            histories.map(
+                (
+                    history,
+                    index
+                ) => {
+
+                    const summary =
+                        historySummary(
+                            history
+                        );
+
+                    return `
+
+                    <tr>
+
+                        <td>
+                            ${index+1}
+                        </td>
+
+                        <td>
+                            <b>
+                                ${fmtDate(
+                                    history.start
+                                )}
+                                —
+                                ${fmtDate(
+                                    history.end
+                                )}
+                            </b>
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="badge ok"
+                            >
+                                ${number(
+                                    summary.hadir
+                                )}
+                                hari
+                            </span>
+
+                        </td>
+
+                        <td>
+                            <b>
+                                ${money(
+                                    summary.total
+                                )}
+                            </b>
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn small primary"
+                                onclick="editHistory(${index})"
+                            >
+                                ✏️ Edit
+                            </button>
+
+                            <button
+                                class="btn small danger"
+                                onclick="deleteHistory(${index})"
+                            >
+                                🗑️ Hapus
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+
+    document.getElementById(
+        "content"
+    ).innerHTML = `
+
+    <div class="grid">
+
+        <div class="card stat">
+
+            <small>
+                Total Relawan
+            </small>
+
+            <strong>
+                ${number(
+                    db.people.length
+                )}
+            </strong>
+
+        </div>
+
+
+        <div class="card stat">
+
+            <small>
+                Total Kehadiran
+            </small>
+
+            <strong>
+                ${number(
+                    totalHadir
+                )}
+            </strong>
+
+        </div>
+
+
+        <div class="card stat">
+
+            <small>
+                Total Pembayaran
+            </small>
+
+            <strong>
+                ${money(
+                    totalPembayaran
+                )}
+            </strong>
+
+        </div>
+
+
+        <div class="card stat">
+
+            <small>
+                Periode Aktif
+            </small>
+
+            <strong
+                style="font-size:14px"
+            >
+                ${getPeriodText()}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="section card">
+
+        <h2>
+            Alur Otomatis
+        </h2>
+
+        <div class="note">
+
+            Absensi →
+            Perhitungan Gaji →
+            Laporan / Rekap →
+            Tanda Terima Upah.
+
+            Data tersimpan di
+            Firebase dan penyimpanan lokal.
+
+        </div>
+
+    </div>
+
+
+    <div class="section card">
+
+        <h2>
+            Periode Aktif
+        </h2>
+
+        <div class="toolbar">
+
+            <label>
+
+                Mulai
+
+                <input
+                    type="date"
+                    id="dashboardStart"
+                    value="${db.periodeStart}"
+                >
+
+            </label>
+
+
+            <label>
+
+                Selesai
+
+                <input
+                    type="date"
+                    id="dashboardEnd"
+                    value="${db.periodeEnd}"
+                >
+
+            </label>
+
+
+            <button
+                class="btn primary"
+                onclick="saveDashboardPeriod()"
+            >
+                💾 Simpan Periode
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="section card">
+
+        <div class="history-header">
+
+            <div>
+
+                <h2>
+                    📋 Riwayat Periode
+                </h2>
+
+                <p class="history-subtitle">
+
+                    Daftar periode absensi
+                    dan pembayaran yang
+                    sudah disimpan.
+
+                </p>
+
+            </div>
+
+            <span class="badge ok">
+
+                ${histories.length}
+                Periode
+
+            </span>
+
+        </div>
+
+
+        <div class="tablewrap">
+
+            <table
+                class="table history-table"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th>No</th>
+
+                        <th>
+                            Tanggal Periode
+                        </th>
+
+                        <th>
+                            Jumlah Kehadiran
+                        </th>
+
+                        <th>
+                            Total Pembayaran
+                        </th>
+
+                        <th>
+                            Aksi
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${historyHTML}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    `;
+
+}
+
+
+/* ======================================================
+   SIMPAN PERIODE DARI DASHBOARD
+   ====================================================== */
+
+function saveDashboardPeriod(){
+
+    const start =
+        document.getElementById(
+            "dashboardStart"
+        ).value;
+
+    const end =
+        document.getElementById(
+            "dashboardEnd"
+        ).value;
+
+
+    if(!start || !end){
+
+        alert(
+            "Tanggal mulai dan selesai wajib diisi."
+        );
+
+        return;
+
+    }
+
+
+    if(end < start){
+
+        alert(
+            "Tanggal selesai tidak boleh sebelum tanggal mulai."
+        );
+
+        return;
+
+    }
+
+
+    const n =
+        periodLengthFrom(
+            start,
+            end
+        );
+
+
+    if(n > 31){
+
+        alert(
+            "Periode maksimal 31 hari."
+        );
+
+        return;
+
+    }
+
+
+    rememberCurrentPeriod();
+
+
+    db.periodeStart =
+        start;
+
+    db.periodeEnd =
+        end;
+
+
+    resetAttendanceForNewPeriod();
+
+
+    save();
+
+    renderDashboard();
+
+
+    showToast(
+        "✓ Periode disimpan dan absensi baru dibuat."
+    );
+
+}
+
+
+/* ======================================================
+   RIWAYAT PERIODE
+   ====================================================== */
+
+function periodKey(
+    start,
+    end
+){
+
+    return (
+        start +
+        "|" +
+        end
+    );
+
+}
+
+
+function snapshotCurrentPeriod(){
+
+    return {
+
+        start:
+            db.periodeStart,
+
+        end:
+            db.periodeEnd,
+
+        savedAt:
+            new Date().toISOString(),
+
+        people:
+            db.people.map(
+                person => ({
+
+                    name:
+                        person.name,
+
+                    jabatan:
+                        person.jabatan,
+
+                    tarif:
+                        Number(
+                            person.tarif
+                        ) || 0,
+
+                    korve:
+                        Number(
+                            person.korve
+                        ) || 0,
+
+                    days:[
+                        ...(person.days || [])
+                    ],
+
+                    reasons:[
+                        ...(person.reasons || [])
+                    ]
+
+                })
+            )
+
+    };
+
+}
+
+
+function rememberCurrentPeriod(){
+
+    const snapshot =
+        snapshotCurrentPeriod();
+
+    if(
+        !Array.isArray(
+            db.periodHistory
+        )
+    ){
+
+        db.periodHistory = [];
+
+    }
+
+
+    const key =
+        periodKey(
+            snapshot.start,
+            snapshot.end
+        );
+
+
+    const index =
+        db.periodHistory.findIndex(
+            item =>
+                periodKey(
+                    item.start,
+                    item.end
+                ) === key
+        );
+
+
+    if(index >= 0){
+
+        db.periodHistory[index] =
+            snapshot;
+
+    }else{
+
+        db.periodHistory.unshift(
+            snapshot
+        );
+
+    }
+
+
+    db.periodHistory =
+        db.periodHistory.slice(
+            0,
+            24
+        );
+
+}
+
+
+function historySummary(
+    history
+){
+
+    let totalHadir =
+        0;
+
+    let totalPembayaran =
+        0;
+
+
+    (
+        history.people || []
+    ).forEach(
+        person => {
+
+            const tarif =
+                Number(
+                    person.tarif
+                ) || 0;
+
+            const korve =
+                Number(
+                    person.korve
+                ) || 0;
+
+            const days =
+                Array.isArray(
+                    person.days
+                )
+                ? person.days
+                : [];
+
+            const h =
+                days.reduce(
+                    (
+                        total,
+                        value
+                    ) =>
+                        total +
+                        (
+                            Number(value) === 1
+                            ? 1
+                            : 0
+                        ),
+                    0
+                );
+
+
+            totalHadir += h;
+
+            totalPembayaran +=
+                (
+                    h * tarif
+                )
+                +
+                korve;
+
+        }
+    );
+
+
+    return {
+
+        hadir:
+            totalHadir,
+
+        total:
+            totalPembayaran
+
+    };
+
+}
+
+
+function editHistory(index){
+
+    const history =
+        db.periodHistory[
+            index
+        ];
+
+
+    if(!history)
+        return;
+
+
+    if(
+        !confirm(
+            "Buka periode " +
+            fmtDate(history.start) +
+            " — " +
+            fmtDate(history.end) +
+            " untuk diedit?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    db.periodeStart =
+        history.start;
+
+    db.periodeEnd =
+        history.end;
+
+
+    const map =
+        new Map(
+            (
+                history.people ||
+                []
+            ).map(
+                person =>
+                    [
+                        person.name,
+                        person
+                    ]
+            )
+        );
+
+
+    const n =
+        periodLength();
+
+
+    db.people.forEach(
+        person => {
+
+            const old =
+                map.get(
+                    person.name
+                ) || {};
+
+
+            person.days =
+                Array.from(
+                    {length:n},
+                    (_,i) =>
+                        (
+                            old.days ||
+                            []
+                        )[i] || 0
+                );
+
+
+            person.reasons =
+                Array.from(
+                    {length:n},
+                    (_,i) =>
+                        (
+                            old.reasons ||
+                            []
+                        )[i] || ""
+                );
+
+        }
+    );
+
+
+    save();
+
+    showPage(
+        "absensi"
+    );
+
+
+    showToast(
+        "✓ Periode dibuka untuk diedit."
+    );
+
+}
+
+
+function deleteHistory(index){
+
+    const history =
+        db.periodHistory[
+            index
+        ];
+
+
+    if(!history)
+        return;
+
+
+    if(
+        !confirm(
+            "Hapus riwayat periode " +
+            fmtDate(history.start) +
+            " — " +
+            fmtDate(history.end) +
+            "?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    db.periodHistory.splice(
+        index,
+        1
+    );
+
+
+    save();
+
+    renderDashboard();
+
+
+    showToast(
+        "✓ Riwayat periode dihapus."
+    );
+
+}
+
+
+/* ======================================================
+   RELAWAN
+   ====================================================== */
+
+function renderRelawan(){
+
+    const divisions =
+        [
+            ...new Set(
+                db.people.map(
+                    p =>
+                        divisionOf(
+                            p.jabatan
+                        )
+                )
+            )
+        ]
+        .sort();
+
+
+    document.getElementById(
+        "content"
+    ).innerHTML = `
+
+    <div class="toolbar">
+
+        <input
+            id="relawanSearch"
+            placeholder="Cari nama atau jabatan..."
+            oninput="filterRelawan()"
+        >
+
+        <select
+            id="divisionFilter"
+            onchange="filterRelawan()"
+        >
+
+            <option value="">
+                Semua Divisi
+            </option>
+
+            ${divisions.map(
+                d => `
+                <option value="${esc(d)}">
+                    ${esc(d)}
+                </option>
+                `
+            ).join("")}
+
+        </select>
+
+
+        <button
+            class="btn primary"
+            onclick="openAddRelawan()"
+        >
+            + Tambah Relawan
+        </button>
+
+    </div>
+
+
+    <div class="note">
+
+        Data relawan dipisahkan
+        berdasarkan divisi agar
+        mudah dicari dan disortir.
+
+    </div>
+
+
+    <div
+        class="tablewrap"
+        style="margin-top:12px"
+    >
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Jabatan</th>
+                    <th>Tarif/Hari</th>
+                    <th>Korve/GC</th>
+                    <th>Aksi</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody
+                id="relawanBody"
+            ></tbody>
+
+        </table>
+
+    </div>
+
+    `;
+
+
+    fillRelawan(
+        db.people
+    );
+
+}
+
+
+function fillRelawan(
+    people
+){
+
+    const groups = {};
+
+
+    people.forEach(
+        person => {
+
+            const division =
+                divisionOf(
+                    person.jabatan
+                );
+
+            if(
+                !groups[division]
+            ){
+
+                groups[division] =
+                    [];
+
+            }
+
+            groups[
+                division
+            ].push(
+                person
+            );
+
+        }
+    );
+
+
+    let no = 0;
+
+    let html = "";
+
+
+    Object.keys(
+        groups
+    )
+    .sort()
+    .forEach(
+        division => {
+
+            html += `
+
+            <tr class="division-row">
+
+                <td colspan="6">
+
+                    <span
+                        class="division-label"
+                    >
+
+                        <span
+                            class="division-dot"
+                        ></span>
+
+                        DIVISI
+                        ${esc(
+                            division
+                        )}
+
+                        <span
+                            class="badge ok"
+                        >
+
+                            ${groups[
+                                division
+                            ].length}
+
+                            relawan
+
+                        </span>
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            `;
+
+
+            groups[
+                division
+            ].forEach(
+                person => {
+
+                    const index =
+                        db.people.indexOf(
+                            person
+                        );
+
+                    no++;
+
+
+                    html += `
+
+                    <tr>
+
+                        <td>
+                            ${no}
+                        </td>
+
+                        <td>
+                            <b>
+                                ${esc(
+                                    person.name
+                                )}
+                            </b>
+                        </td>
+
+                        <td>
+                            ${esc(
+                                person.jabatan
+                            )}
+                        </td>
+
+                        <td>
+                            ${money(
+                                person.tarif
+                            )}
+                        </td>
+
+                        <td>
+                            ${money(
+                                person.korve
+                            )}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn small"
+                                onclick="editRelawan(${index})"
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                class="btn small danger"
+                                onclick="deleteRelawan(${index})"
+                            >
+                                Hapus
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    `;
+
+                }
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "relawanBody"
+    ).innerHTML =
+        html ||
+        `
+        <tr>
+            <td
+                colspan="6"
+                class="empty"
+            >
+                Belum ada data relawan.
+            </td>
+        </tr>
+        `;
+
+}
+
+
+function filterRelawan(){
+
+    const q =
+        (
+            document.getElementById(
+                "relawanSearch"
+            ).value || ""
+        )
+        .toLowerCase();
+
+    const division =
+        document.getElementById(
+            "divisionFilter"
+        ).value;
+
+
+    const filtered =
+        db.people.filter(
+            person => {
+
+                const text =
+                    (
+                        person.name +
+                        " " +
+                        person.jabatan
+                    ).toLowerCase();
+
+                return (
+                    (
+                        !q ||
+                        text.includes(q)
+                    )
+                    &&
+                    (
+                        !division ||
+                        divisionOf(
+                            person.jabatan
+                        ) === division
+                    )
+                );
+
+            }
+        );
+
+
+    fillRelawan(
+        filtered
+    );
+
+}
+
+
+function openAddRelawan(){
+
+    editIndex = -1;
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        "Tambah Relawan";
+
+
+    document.getElementById(
+        "fName"
+    ).value = "";
+
+    document.getElementById(
+        "fJob"
+    ).value = "";
+
+    document.getElementById(
+        "fRate"
+    ).value = "";
+
+    document.getElementById(
+        "fKorve"
+    ).value = "";
+
+
+    document.getElementById(
+        "modalRelawan"
+    ).classList.add(
+        "show"
+    );
+
+}
+
+
+function editRelawan(index){
+
+    editIndex =
+        index;
+
+    const person =
+        db.people[
+            index
+        ];
+
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        "Edit Relawan";
+
+
+    document.getElementById(
+        "fName"
+    ).value =
+        person.name;
+
+    document.getElementById(
+        "fJob"
+    ).value =
+        person.jabatan;
+
+    document.getElementById(
+        "fRate"
+    ).value =
+        person.tarif;
+
+    document.getElementById(
+        "fKorve"
+    ).value =
+        person.korve;
+
+
+    document.getElementById(
+        "modalRelawan"
+    ).classList.add(
+        "show"
+    );
+
+}
+
+
+function closeRelawanModal(){
+
+    document.getElementById(
+        "modalRelawan"
+    ).classList.remove(
+        "show"
+    );
+
+}
+
+
+function savePerson(){
+
+    const name =
+        document.getElementById(
+            "fName"
+        ).value.trim();
+
+
+    if(!name){
+
+        alert(
+            "Nama wajib diisi."
+        );
+
+        return;
+
+    }
+
+
+    const job =
+        document.getElementById(
+            "fJob"
+        ).value.trim();
+
+    const rate =
+        Number(
+            document.getElementById(
+                "fRate"
+            ).value
+        ) || 0;
+
+    const korve =
+        Number(
+            document.getElementById(
+                "fKorve"
+            ).value
+        ) || 0;
+
+
+    if(editIndex < 0){
+
+        db.people.push({
+
+            name:name,
+
+            jabatan:job,
+
+            tarif:rate,
+
+            korve:korve,
+
+            days:
+                Array.from(
+                    {
+                        length:
+                            periodLength()
+                    },
+                    () => 0
+                ),
+
+            reasons:
+                Array.from(
+                    {
+                        length:
+                            periodLength()
+                    },
+                    () => ""
+                )
+
+        });
+
+    }else{
+
+        const old =
+            db.people[
+                editIndex
+            ];
+
+        old.name =
+            name;
+
+        old.jabatan =
+            job;
+
+        old.tarif =
+            rate;
+
+        old.korve =
+            korve;
+
+    }
+
+
+    save();
+
+    closeRelawanModal();
+
+    renderRelawan();
+
+    showToast(
+        "✓ Data relawan disimpan."
+    );
+
+}
+
+
+function deleteRelawan(index){
+
+    const person =
+        db.people[
+            index
+        ];
+
+
+    if(!person)
+        return;
+
+
+    if(
+        !confirm(
+            "Hapus " +
+            person.name +
+            "?"
+        )
+    )
+        return;
+
+
+    db.people.splice(
+        index,
+        1
+    );
+
+
+    save();
+
+    renderRelawan();
+
+    showToast(
+        "✓ Relawan dihapus."
+    );
+
+}
+
+
+/* ======================================================
+   RESET ABSENSI PERIODE
+   ====================================================== */
+
+function defaultAttendance(
+    start,
+    index,
+    security
+){
+
+    const date =
+        new Date(
+            start +
+            "T00:00:00"
+        );
+
+    date.setDate(
+        date.getDate() +
+        index
+    );
+
+
+    const day =
+        date.getDay();
+
+
+    /* Minggu */
+
+    if(day === 0)
+        return 0;
+
+
+    /* Sabtu */
+
+    if(day === 6){
+
+        return security
+            ? 1
+            : 0;
+
+    }
+
+
+    /* Senin-Jumat */
+
+    return 1;
+
+}
+
+
+function resetAttendanceForNewPeriod(){
+
+    const n =
+        periodLength();
+
+
+    db.people.forEach(
+        person => {
+
+            const security =
+                divisionOf(
+                    person.jabatan
+                ) === "SECURITY";
+
+
+            person.days =
+                Array.from(
+                    {
+                        length:n
+                    },
+                    (_,i) =>
+                        defaultAttendance(
+                            db.periodeStart,
+                            i,
+                            security
+                        )
+                );
+
+
+            person.reasons =
+                Array.from(
+                    {
+                        length:n
+                    },
+                    (_,i) => {
+
+                        const date =
+                            new Date(
+                                db.periodeStart +
+                                "T00:00:00"
+                            );
+
+                        date.setDate(
+                            date.getDate() +
+                            i
+                        );
+
+                        const day =
+                            date.getDay();
+
+
+                        if(day === 0)
+                            return "LIBUR";
+
+                        if(
+                            day === 6 &&
+                            !security
+                        )
+                            return "LIBUR";
+
+                        return "";
+
+                    }
+                );
+
+        }
+    );
+
+}
+
+
+/* ======================================================
+   REKAP ABSENSI
+   ====================================================== */
+
+function renderAbsensi(){
+
+    const histories =
+        db.periodHistory || [];
+
+
+    document.getElementById(
+        "content"
+    ).innerHTML = `
+
+    <div class="toolbar">
+
+        <label>
+
+            Mulai
+
+            <input
+                type="date"
+                id="absStart"
+                value="${db.periodeStart}"
+            >
+
+        </label>
+
+
+        <label>
+
+            Selesai
+
+            <input
+                type="date"
+                id="absEnd"
+                value="${db.periodeEnd}"
+            >
+
+        </label>
+
+
+        <button
+            class="btn primary"
+            onclick="saveAbsensiPeriod()"
+        >
+            💾 Simpan Periode & Reset Absensi
+        </button>
+
+
+        <select
+            id="historySelect"
+            onchange="openHistoryFromSelect(this.value)"
+        >
+
+            <option value="">
+                Pencarian Periode
+            </option>
+
+            ${histories.map(
+                history => `
+
+                <option
+                    value="${periodKey(
+                        history.start,
+                        history.end
+                    )}"
+                >
+
+                    ${fmtDate(
+                        history.start
+                    )}
+                    —
+                    ${fmtDate(
+                        history.end
+                    )}
+
+                </option>
+
+                `
+            ).join("")}
+
+        </select>
+
+
+        <input
+            id="absSearch"
+            placeholder="Cari nama..."
+            oninput="filterAbsensi()"
+        >
+
+    </div>
+
+
+    <div class="note">
+
+        Periode aktif:
+        <b>
+            ${getPeriodText()}
+        </b>
+
+        <br>
+
+        Senin–Jumat:
+        <b style="color:#166534">
+            Hijau / Hadir
+        </b>
+
+        <br>
+
+        Sabtu–Minggu:
+        <b style="color:#991b1b">
+            Merah / Libur
+        </b>
+
+        <br>
+
+        Security:
+        Sabtu tetap
+        <b style="color:#166534">
+            Hadir
+        </b>,
+        Minggu
+        <b style="color:#991b1b">
+            Libur
+        </b>.
+
+    </div>
+
+
+    <div
+        class="tablewrap"
+        style="margin-top:12px"
+    >
+
+        <table
+            class="table"
+            style="min-width:1300px"
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        No
+                    </th>
+
+                    <th>
+                        Nama
+                    </th>
+
+                    ${Array.from(
+                        {
+                            length:
+                                periodLength()
+                        },
+                        (_,i) => {
+
+                            const date =
+                                new Date(
+                                    db.periodeStart +
+                                    "T00:00:00"
+                                );
+
+                            date.setDate(
+                                date.getDate() +
+                                i
+                            );
+
+                            const names = [
+                                "Min",
+                                "Sen",
+                                "Sel",
+                                "Rab",
+                                "Kam",
+                                "Jum",
+                                "Sab"
+                            ];
+
+                            return `
+
+                            <th>
+
+                                ${names[
+                                    date.getDay()
+                                ]}
+
+                                <br>
+
+                                <small>
+                                    ${date.getDate()}/
+                                    ${date.getMonth()+1}
+                                </small>
+
+                            </th>
+
+                            `;
+
+                        }
+                    ).join("")}
+
+                    <th>
+                        Total
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody
+                id="absensiBody"
+            ></tbody>
+
+        </table>
+
+    </div>
+
+    `;
+
+
+    fillAbsensi(
+        db.people
+    );
+
+}
+
+
+function fillAbsensi(
+    people
+){
+
+    const groups = {};
+
+
+    people.forEach(
+        person => {
+
+            const division =
+                divisionOf(
+                    person.jabatan
+                );
+
+            if(
+                !groups[division]
+            )
+                groups[division] = [];
+
+            groups[division].push(
+                person
+            );
+
+        }
+    );
+
+
+    let no = 0;
+
+    let html = "";
+
+    const columns =
+        periodLength();
+
+
+    Object.keys(
+        groups
+    )
+    .sort()
+    .forEach(
+        division => {
+
+            html += `
+
+            <tr class="division-row">
+
+                <td
+                    colspan="${columns+3}"
+                >
+
+                    <span
+                        class="division-label"
+                    >
+
+                        <span
+                            class="division-dot"
+                        ></span>
+
+                        DIVISI
+                        ${esc(
+                            division
+                        )}
+
+                        <span
+                            class="badge ok"
+                        >
+
+                            ${groups[
+                                division
+                            ].length}
+                            relawan
+
+                        </span>
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            `;
+
+
+            groups[
+                division
+            ].forEach(
+                person => {
+
+                    const index =
+                        db.people.indexOf(
+                            person
+                        );
+
+                    no++;
+
+
+                    html += `
+
+                    <tr>
+
+                        <td>
+                            ${no}
+                        </td>
+
+                        <td>
+                            <b>
+                                ${esc(
+                                    person.name
+                                )}
+                            </b>
+                        </td>
+
+                        ${person.days.map(
+                            (
+                                status,
+                                dayIndex
+                            ) => {
+
+                                const reason =
+                                    (
+                                        person.reasons ||
+                                        []
+                                    )[dayIndex] ||
+                                    "";
+
+
+                                let cls =
+                                    "";
+
+                                let text =
+                                    "×";
+
+
+                                if(status === 1){
+
+                                    cls =
+                                        "on";
+
+                                    text =
+                                        "✓";
+
+                                }else if(
+                                    reason === "IZIN"
+                                ){
+
+                                    cls =
+                                        "izin";
+
+                                    text =
+                                        "I";
+
+                                }else if(
+                                    reason === "SAKIT"
+                                ){
+
+                                    cls =
+                                        "sakit";
+
+                                    text =
+                                        "S";
+
+                                }else if(
+                                    reason === "ALPA"
+                                ){
+
+                                    cls =
+                                        "alpa";
+
+                                    text =
+                                        "A";
+
+                                }else if(
+                                    reason === "LAINNYA"
+                                ){
+
+                                    cls =
+                                        "lainnya";
+
+                                    text =
+                                        "L";
+
+                                }
+
+
+                                return `
+
+                                <td>
+
+                                    <button
+                                        class="abs ${cls}"
+                                        onclick="openAttendance(
+                                            ${index},
+                                            ${dayIndex}
+                                        )"
+                                        title="Klik untuk mengubah status"
+                                    >
+
+                                        ${text}
+
+                                    </button>
+
+                                </td>
+
+                                `;
+
+                            }
+                        ).join("")}
+
+                        <td>
+                            <b>
+                                ${hadir(
+                                    person
+                                )}
+                            </b>
+                        </td>
+
+                    </tr>
+
+                    `;
+
+                }
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "absensiBody"
+    ).innerHTML =
+        html ||
+        `
+
+        <tr>
+
+            <td
+                colspan="${columns+3}"
+                class="empty"
+            >
+                Belum ada data relawan.
+            </td>
+
+        </tr>
+
+        `;
+
+}
+
+
+function filterAbsensi(){
+
+    const q =
+        (
+            document.getElementById(
+                "absSearch"
+            ).value || ""
+        )
+        .toLowerCase();
+
+
+    fillAbsensi(
+        db.people.filter(
+            person =>
+                person.name
+                    .toLowerCase()
+                    .includes(q)
+        )
+    );
+
+}
+
+
+/* ======================================================
+   SIMPAN PERIODE ABSENSI
+   ====================================================== */
+
+function saveAbsensiPeriod(){
+
+    const start =
+        document.getElementById(
+            "absStart"
+        ).value;
+
+    const end =
+        document.getElementById(
+            "absEnd"
+        ).value;
+
+
+    if(!start || !end){
+
+        alert(
+            "Tanggal mulai dan selesai wajib diisi."
+        );
+
+        return;
+
+    }
+
+
+    if(end < start){
+
+        alert(
+            "Tanggal selesai tidak boleh sebelum tanggal mulai."
+        );
+
+        return;
+
+    }
+
+
+    const n =
+        periodLengthFrom(
+            start,
+            end
+        );
+
+
+    if(n > 31){
+
+        alert(
+            "Periode maksimal 31 hari."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Simpan periode lama
+     * ke riwayat
+     */
+
+    rememberCurrentPeriod();
+
+
+    /*
+     * Buat periode baru
+     */
+
+    db.periodeStart =
+        start;
+
+    db.periodeEnd =
+        end;
+
+
+    resetAttendanceForNewPeriod();
+
+
+    save();
+
+
+    renderAbsensi();
+
+
+    showToast(
+        "✓ Periode disimpan. Absensi otomatis dibuat."
+    );
+
+}
+
+
+/* ======================================================
+   BUKA PERIODE DARI PENCARIAN
+   ====================================================== */
+
+function openHistoryFromSelect(
+    key
+){
+
+    if(!key)
+        return;
+
+
+    const history =
+        (
+            db.periodHistory ||
+            []
+        ).find(
+            item =>
+                periodKey(
+                    item.start,
+                    item.end
+                ) === key
+        );
+
+
+    if(!history)
+        return;
+
+
+    db.periodeStart =
+        history.start;
+
+    db.periodeEnd =
+        history.end;
+
+
+    const map =
+        new Map(
+            (
+                history.people ||
+                []
+            ).map(
+                person =>
+                    [
+                        person.name,
+                        person
+                    ]
+            )
+        );
+
+
+    const n =
+        periodLength();
+
+
+    db.people.forEach(
+        person => {
+
+            const old =
+                map.get(
+                    person.name
+                ) || {};
+
+
+            person.days =
+                Array.from(
+                    {length:n},
+                    (_,i) =>
+                        (
+                            old.days ||
+                            []
+                        )[i] || 0
+                );
+
+
+            person.reasons =
+                Array.from(
+                    {length:n},
+                    (_,i) =>
+                        (
+                            old.reasons ||
+                            []
+                        )[i] || ""
+                );
+
+        }
+    );
+
+
+    save();
+
+    renderAbsensi();
+
+    showToast(
+        "✓ Periode berhasil dibuka."
+    );
+
+}
+
+
+/* ======================================================
+   STATUS ABSENSI
+   ====================================================== */
+
+function openAttendance(
+    index,
+    dayIndex
+){
+
+    attendanceTarget = {
+
+        index:index,
+
+        day:dayIndex
+
+    };
+
+
+    const person =
+        db.people[
+            index
+        ];
+
+
+    const date =
+        new Date(
+            db.periodeStart +
+            "T00:00:00"
+        );
+
+    date.setDate(
+        date.getDate() +
+        dayIndex
+    );
+
+
+    const current =
+        person.days[
+            dayIndex
+        ]
+        ? "HADIR"
+        :
+        (
+            (
+                person.reasons ||
+                []
+            )[dayIndex]
+            ||
+            "TIDAK HADIR"
+        );
+
+
+    document.getElementById(
+        "attendanceInfo"
+    ).innerHTML = `
+
+        <b>
+            ${esc(
+                person.name
+            )}
+        </b>
+
+        <br>
+
+        ${dateLocal(
+            date
+        )}
+
+        <br>
+
+        Status sekarang:
+        <b>
+            ${current}
+        </b>
+
+    `;
+
+
+    document.getElementById(
+        "attendanceModal"
+    ).classList.add(
+        "show"
+    );
+
+}
+
+
+function closeAttendanceModal(){
+
+    document.getElementById(
+        "attendanceModal"
+    ).classList.remove(
+        "show"
+    );
+
+
+    attendanceTarget = {
+
+        index:null,
+
+        day:null
+
+    };
+
+}
+
+
+function setAttendance(
+    status
+){
+
+    const index =
+        attendanceTarget.index;
+
+    const day =
+        attendanceTarget.day;
+
+
+    if(
+        index === null ||
+        day === null
+    )
+        return;
+
+
+    const person =
+        db.people[
+            index
+        ];
+
+
+    if(!person)
+        return;
+
+
+    if(!Array.isArray(
+        person.reasons
+    )){
+
+        person.reasons =
+            Array.from(
+                {
+                    length:
+                        person.days.length
+                },
+                () => ""
+            );
+
+    }
+
+
+    if(status === "HADIR"){
+
+        person.days[
+            day
+        ] = 1;
+
+        person.reasons[
+            day
+        ] = "";
+
+    }else{
+
+        person.days[
+            day
+        ] = 0;
+
+        person.reasons[
+            day
+        ] = status;
+
+    }
+
+
+    save();
+
+    closeAttendanceModal();
+
+    renderAbsensi();
+
+    showToast(
+        "✓ Status absensi diperbarui."
+    );
+
+}
+
+
+/* ======================================================
+   REKAP GAJI
+   ====================================================== */
+
+function renderGaji(){
+
+    document.getElementById(
+        "content"
+    ).innerHTML = `
+
+    <div class="toolbar">
+
+        <input
+            id="gajiSearch"
+            placeholder="Cari nama..."
+            oninput="filterGaji()"
+        >
+
+        <select
+            id="paperSize"
+        >
+
+            <option value="A4">
+                A4
+            </option>
+
+            <option value="F4">
+                F4
+            </option>
+
+        </select>
+
+
+        <button
+            class="btn primary"
+            onclick="printAllSlips()"
+        >
+            🖨️ Cetak Semua Slip
+        </button>
+
+    </div>
+
+
+    <div class="note">
+
+        Periode:
+        <b>
+            ${getPeriodText()}
+        </b>
+
+        <br>
+
+        Slip gaji dapat dicetak
+        4 slip secara vertikal
+        dalam satu lembar.
+
+    </div>
+
+
+    <div
+        class="tablewrap"
+        style="margin-top:12px"
+    >
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Jabatan</th>
+                    <th>Absensi</th>
+                    <th>Tarif/Hari</th>
+                    <th>Upah</th>
+                    <th>Korve/GC</th>
+                    <th>Total</th>
+                    <th>Aksi</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody
+                id="gajiBody"
+            ></tbody>
+
+        </table>
+
+    </div>
+
+    `;
+
+
+    fillGaji(
+        db.people
+    );
+
+}
+
+
+function fillGaji(
+    people
+){
+
+    document.getElementById(
+        "gajiBody"
+    ).innerHTML =
+
+        people.map(
+            person => {
+
+                const index =
+                    db.people.indexOf(
+                        person
+                    );
+
+
+                return `
+
+                <tr>
+
+                    <td>
+                        ${index+1}
+                    </td>
+
+                    <td>
+                        <b>
+                            ${esc(
+                                person.name
+                            )}
+                        </b>
+                    </td>
+
+                    <td>
+                        ${esc(
+                            person.jabatan
+                        )}
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="badge ok"
+                        >
+
+                            ${hadir(
+                                person
+                            )}
+                            hari
+
+                        </span>
+
+                    </td>
+
+                    <td>
+                        ${money(
+                            person.tarif
+                        )}
+                    </td>
+
+                    <td>
+                        ${money(
+                            upah(person)
+                        )}
+                    </td>
+
+                    <td>
+                        ${money(
+                            person.korve
+                        )}
+                    </td>
+
+                    <td>
+                        <b>
+                            ${money(
+                                totalGaji(
+                                    person
+                                )
+                            )}
+                        </b>
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn small primary"
+                            onclick="printOneSlip(${index})"
+                        >
+                            Cetak Slip
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+function filterGaji(){
+
+    const q =
+        (
+            document.getElementById(
+                "gajiSearch"
+            ).value || ""
+        ).toLowerCase();
+
+
+    fillGaji(
+        db.people.filter(
+            person =>
+                person.name
+                    .toLowerCase()
+                    .includes(q)
+        )
+    );
+
+}
+
+
+/* ======================================================
+   TERBILANG
+   ====================================================== */
+
+function terbilang(
+    value
+){
+
+    const angka = [
+
+        "",
+        "satu",
+        "dua",
+        "tiga",
+        "empat",
+        "lima",
+        "enam",
+        "tujuh",
+        "delapan",
+        "sembilan",
+        "sepuluh",
+        "sebelas"
+
+    ];
+
+
+    value =
+        Math.floor(
+            Number(value)||0
+        );
+
+
+    if(value < 12)
+        return angka[value];
+
+
+    if(value < 20)
+        return (
+            terbilang(
+                value-10
+            )
+            +
+            " belas"
+        );
+
+
+    if(value < 100)
+        return (
+            terbilang(
+                Math.floor(
+                    value/10
+                )
+            )
+            +
+            " puluh " +
+            terbilang(
+                value%10
+            )
+        );
+
+
+    if(value < 200)
+        return (
+            "seratus " +
+            terbilang(
+                value-100
+            )
+        );
+
+
+    if(value < 1000)
+        return (
+            terbilang(
+                Math.floor(
+                    value/100
+                )
+            )
+            +
+            " ratus " +
+            terbilang(
+                value%100
+            )
+        );
+
+
+    if(value < 2000)
+        return (
+            "seribu " +
+            terbilang(
+                value-1000
+            )
+        );
+
+
+    if(value < 1000000)
+        return (
+            terbilang(
+                Math.floor(
+                    value/1000
+                )
+            )
+            +
+            " ribu " +
+            terbilang(
+                value%1000
+            )
+        );
+
+
+    if(value < 1000000000)
+        return (
+            terbilang(
+                Math.floor(
+                    value/1000000
+                )
+            )
+            +
+            " juta " +
+            terbilang(
+                value%1000000
+            )
+        );
+
+
+    if(value < 1000000000000)
+        return (
+            terbilang(
+                Math.floor(
+                    value/1000000000
+                )
+            )
+            +
+            " miliar " +
+            terbilang(
+                value%1000000000
+            )
+        );
+
+
+    return String(value);
+
+}
+
+
+/* ======================================================
+   HTML SLIP
+   ====================================================== */
+
+function slipHTML(
+    person
+){
+
+    const total =
+        totalGaji(
+            person
+        );
+
+
+    return `
+
+    <div class="print-slip">
+
+        <div class="receipt-head">
+
+            <div class="receipt-logo">
+
+                <img
+					src="logo-bgn-transparent.png"
+					alt="Logo BGN"
+    >
+
+            </div>
+
+
+            <div class="receipt-org">
+
+                <b>
+                    SATUAN PELAYANAN PEMENUHAN GIZI
+                </b>
+
+                <strong>
+                    CIKASO, KAB. CIAMIS
+                </strong>
+
+            </div>
+
+
+            <div class="receipt-title">
+
+                <b>
+                    TANDA TERIMA UPAH RELAWAN
+                </b>
+
+                <div>
+                    Jumlah Hari Kerja:
+                    <strong>
+                        ${hadir(person)} hari
+                    </strong>
+                </div>
+
+                <div>
+                    Periode:
+                    <strong>
+                        ${getPeriodText()}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="receipt-info">
+
+            <div>
+                <span>Nama</span>
+                <i>:</i>
+                <b>
+                    ${esc(
+                        person.name
+                    )}
+                </b>
+            </div>
+
+            <div>
+                <span>Jabatan</span>
+                <i>:</i>
+                <b>
+                    ${esc(
+                        person.jabatan
+                    )}
+                </b>
+            </div>
+
+            <div>
+                <span>Gaji Pokok</span>
+                <i>:</i>
+                <b>
+                    ${money(
+                        upah(person)
+                    )}
+                </b>
+            </div>
+
+            <div>
+                <span>Tunjangan PJ</span>
+                <i>:</i>
+                <b>
+                    ${money(
+                        person.korve
+                    )}
+                </b>
+            </div>
+
+        </div>
+
+
+        <div class="receipt-total">
+
+            <b>
+                Total Penerimaan
+            </b>
+
+            <strong>
+                ${money(
+                    total
+                )}
+            </strong>
+
+        </div>
+
+
+        <div class="receipt-words">
+
+            ${terbilang(
+                total
+            )}
+            rupiah
+
+        </div>
+
+
+        <div class="receipt-signatures">
+
+            <div class="signature-col">
+
+                <div>
+                    Penerima
+                </div>
+
+                <div
+                    class="signature-space"
+                ></div>
+
+                <b>
+                    ${esc(
+                        person.name
+                    )}
+                </b>
+
+                <span>
+                    Karyawan
+                </span>
+
+            </div>
+
+
+            <div class="signature-col">
+
+                <div>
+                    Mengetahui
+                </div>
+
+                <div
+                    class="signature-space"
+                ></div>
+
+                <b>
+                    Ika Cahyani, S.Ak
+                </b>
+
+                <span>
+                    Akuntan
+                </span>
+
+            </div>
+
+
+            <div class="signature-col">
+
+                <div>
+                    Menyetujui
+                </div>
+
+                <div
+                    class="signature-space"
+                ></div>
+
+                <b>
+                    Irwan Sofyan,S.IP
+                </b>
+
+                <span>
+                    Kepala SPPG
+                </span>
+
+                <span>
+                    NIP. 199705242026211020
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    `;
+
+}
+
+
+/* ======================================================
+   CETAK SLIP
+   ====================================================== */
+
+function getPaperSize(){
+
+    return (
+        document.getElementById(
+            "paperSize"
+        )?.value || "A4"
+    );
+
+}
+
+
+function printOneSlip(
+    index
+){
+
+    const person =
+        db.people[
+            index
+        ];
+
+
+    if(!person)
+        return;
+
+
+    const paper =
+        getPaperSize();
+
+
+    const pageSize =
+        paper === "F4"
+        ? "215.9mm 330.2mm"
+        : "210mm 297mm";
+
+
+    const win =
+        window.open(
+            "",
+            "_blank"
+        );
+
+
+    if(!win){
+
+        alert(
+            "Izinkan popup untuk mencetak."
+        );
+
+        return;
+
+    }
+
+
+    win.document.write(`
+
+    <!DOCTYPE html>
+
+    <html>
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <title>
+            Tanda Terima Upah
+        </title>
+
+        <style>
+
+            @page{
+                size:${pageSize} portrait;
+                margin:6mm;
+            }
+
+            *{
+                box-sizing:border-box;
+            }
+
+            body{
+                margin:0;
+                font-family:Arial,sans-serif;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        ${slipHTML(
+            person
+        )}
+
+    </body>
+
+    </html>
+
+    `);
+
+
+    win.document.close();
+
+    setTimeout(
+        () => {
+
+            win.focus();
+
+            win.print();
+
+        },
+        600
+    );
+
+}
+
+
+function printAllSlips(){
+
+    if(
+        !db.people.length
+    ){
+
+        alert(
+            "Belum ada data relawan."
+        );
+
+        return;
+
+    }
+
+
+    const paper =
+        getPaperSize();
+
+
+    const pageW =
+        paper === "F4"
+        ? "215.9mm"
+        : "210mm";
+
+
+    const pageH =
+        paper === "F4"
+        ? "330.2mm"
+        : "297mm";
+
+
+    const margin =
+        6;
+
+
+    const usable =
+        (
+            parseFloat(
+                pageH
+            ) -
+            margin*2
+        );
+
+
+    const gap =
+        3;
+
+
+    const slipHeight =
+        (
+            usable -
+            gap*3
+        ) / 4;
+
+
+    let html = "";
+
+
+    for(
+        let i=0;
+        i<db.people.length;
+        i+=4
+    ){
+
+        const chunk =
+            db.people.slice(
+                i,
+                i+4
+            );
+
+
+        html += `
+
+        <div
+            class="print-sheet"
+            style="
+                grid-template-rows:
+                repeat(
+                    ${chunk.length},
+                    ${slipHeight}mm
+                );
+            "
+        >
+
+            ${chunk.map(
+                person =>
+                    slipHTML(
+                        person
+                    )
+            ).join("")}
+
+        </div>
+
+        `;
+
+    }
+
+
+    const win =
+        window.open(
+            "",
+            "_blank"
+        );
+
+
+    if(!win){
+
+        alert(
+            "Izinkan popup untuk mencetak."
+        );
+
+        return;
+
+    }
+
+
+    win.document.write(`
+
+    <!DOCTYPE html>
+
+    <html>
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <title>
+            Tanda Terima Upah Relawan
+        </title>
+
+        <style>
+
+        @page{
+
+            size:
+                ${pageW}
+                ${pageH}
+                portrait;
+
+            margin:
+                ${margin}mm;
+
+        }
+
+        *{
+            box-sizing:border-box;
+        }
+
+        html,
+        body{
+
+            margin:0;
+            padding:0;
+            width:${pageW};
+
+        }
+
+        body{
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:white;
+
+        }
+
+        .print-sheet{
+
+            width:100%;
+
+            height:
+                ${usable}mm;
+
+            display:grid;
+
+            grid-template-columns:
+                1fr;
+
+            gap:
+                ${gap}mm;
+
+            page-break-after:
+                always;
+
+            break-after:
+                page;
+
+            overflow:hidden;
+
+        }
+
+        .print-sheet:last-child{
+
+            page-break-after:
+                auto;
+
+            break-after:
+                auto;
+
+        }
+
+        .print-slip{
+
+            width:100%;
+
+            height:100%;
+
+            border:
+                1px solid #222;
+
+            padding:
+                3mm;
+
+            background:white;
+
+            overflow:hidden;
+
+            break-inside:
+                avoid;
+
+            page-break-inside:
+                avoid;
+
+        }
+
+        .receipt-head{
+
+            display:grid;
+
+            grid-template-columns:
+                17mm
+                1fr
+                57mm;
+
+            gap:2mm;
+
+            align-items:center;
+
+            border-bottom:
+                1px solid #222;
+
+            padding-bottom:
+                1.5mm;
+
+        }
+
+        .receipt-logo{
+
+            width:15mm;
+            height:15mm;
+
+        }
+
+        .receipt-logo img{
+
+            width:100%;
+            height:100%;
+
+            object-fit:contain;
+
+        }
+
+        .receipt-org{
+
+            font-size:8px;
+
+            line-height:1.2;
+
+        }
+
+        .receipt-org b{
+
+            display:block;
+
+            font-size:9px;
+
+        }
+
+        .receipt-org strong{
+
+            display:block;
+
+            font-size:9px;
+
+        }
+
+        .receipt-title{
+
+            font-size:7px;
+
+            line-height:1.35;
+
+        }
+
+        .receipt-title>b{
+
+            display:block;
+
+            font-size:9px;
+
+            margin-bottom:1mm;
+
+        }
+
+        .receipt-info{
+
+            padding:
+                1.5mm 0;
+
+            font-size:7px;
+
+        }
+
+        .receipt-info > div{
+
+            display:grid;
+
+            grid-template-columns:
+                24mm
+                3mm
+                1fr;
+
+            min-height:
+                3.2mm;
+
+        }
+
+        .receipt-total{
+
+            display:flex;
+
+            justify-content:space-between;
+
+            align-items:center;
+
+            border-top:
+                1px solid #222;
+
+            border-bottom:
+                1px solid #222;
+
+            padding:
+                1.2mm 2mm;
+
+            font-size:8px;
+
+        }
+
+        .receipt-total strong{
+
+            font-size:9px;
+
+        }
+
+        .receipt-words{
+
+            text-align:center;
+
+            font-weight:800;
+
+            font-style:italic;
+
+            font-size:7px;
+
+            padding:1mm;
+
+            border-bottom:
+                1px solid #222;
+
+            text-transform:
+                uppercase;
+
+        }
+
+        .receipt-signatures{
+
+            display:grid;
+
+            grid-template-columns:
+                repeat(3,1fr);
+
+            gap:2mm;
+
+            padding-top:1.5mm;
+
+            text-align:center;
+
+            font-size:6.7px;
+
+            line-height:1.2;
+
+        }
+
+        .signature-space{
+
+            height:7mm;
+
+        }
+
+        .signature-col b{
+
+            display:block;
+
+            font-size:6.7px;
+
+            text-decoration:underline;
+
+            white-space:nowrap;
+
+        }
+
+        .signature-col span{
+
+            display:block;
+
+            margin-top:.5mm;
+
+        }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        ${html}
+
+    </body>
+
+    </html>
+
+    `);
+
+
+    win.document.close();
+
+
+    setTimeout(
+        () => {
+
+            win.focus();
+
+            win.print();
+
+        },
+        700
+    );
+
+}
+
+
+/* ======================================================
+   LAPORAN / REKAP
+   ====================================================== */
+
+function renderLaporan(){
+
+    const divisions =
+        [
+            ...new Set(
+                db.people.map(
+                    p =>
+                        divisionOf(
+                            p.jabatan
+                        )
+                )
+            )
+        ]
+        .sort();
+
+
+    document.getElementById(
+        "content"
+    ).innerHTML = `
+
+    <div class="toolbar">
+
+        <input
+            id="reportSearch"
+            placeholder="Cari nama / jabatan..."
+            oninput="filterReport()"
+        >
+
+        <select
+            id="reportDivision"
+            onchange="filterReport()"
+        >
+
+            <option value="">
+                Semua Divisi
+            </option>
+
+            ${divisions.map(
+                division => `
+
+                <option
+                    value="${esc(
+                        division
+                    )}"
+                >
+                    ${esc(
+                        division
+                    )}
+                </option>
+
+                `
+            ).join("")}
+
+        </select>
+
+
+        <button
+            class="btn primary"
+            onclick="printReport()"
+        >
+            🖨️ Cetak Rekap
+        </button>
+
+
+        <button
+            class="btn green"
+            onclick="exportReportCSV()"
+        >
+            ⬇ Export CSV
+        </button>
+
+
+        <button
+            class="btn"
+            onclick="printAllSlips()"
+        >
+            Cetak Semua Slip
+        </button>
+
+    </div>
+
+
+    <div class="note">
+
+        Rekap keseluruhan karyawan
+        untuk periode:
+
+        <b>
+            ${getPeriodText()}
+        </b>
+
+    </div>
+
+
+    <div
+        id="reportSummary"
+        class="grid section"
+    ></div>
+
+
+    <div
+        class="tablewrap section"
+    >
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Jabatan</th>
+                    <th>Hadir</th>
+                    <th>Tarif/Hari</th>
+                    <th>Upah</th>
+                    <th>Korve/GC</th>
+                    <th>Total Gaji</th>
+                    <th>Aksi</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody
+                id="reportBody"
+            ></tbody>
+
+            <tfoot
+                id="reportFoot"
+            ></tfoot>
+
+        </table>
+
+    </div>
+
+    `;
+
+
+    fillReport();
+
+}
+
+
+function getFilteredReport(){
+
+    const search =
+        (
+            document.getElementById(
+                "reportSearch"
+            )?.value || ""
+        )
+        .toLowerCase()
+        .trim();
+
+
+    const division =
+        document.getElementById(
+            "reportDivision"
+        )?.value || "";
+
+
+    return db.people
+        .map(
+            (
+                person,
+                index
+            ) => ({
+
+                person,
+
+                index,
+
+                division:
+                    divisionOf(
+                        person.jabatan
+                    ),
+
+                hadir:
+                    hadir(person),
+
+                upah:
+                    upah(person),
+
+                total:
+                    totalGaji(person)
+
+            })
+        )
+        .filter(
+            row => {
+
+                const text =
+                    (
+                        row.person.name +
+                        " " +
+                        row.person.jabatan +
+                        " " +
+                        row.division
+                    ).toLowerCase();
+
+
+                return (
+
+                    (
+                        !search ||
+                        text.includes(
+                            search
+                        )
+                    )
+
+                    &&
+
+                    (
+                        !division ||
+                        row.division ===
+                        division
+                    )
+
+                );
+
+            }
+        )
+        .sort(
+            (
+                a,
+                b
+            ) =>
+                a.division.localeCompare(
+                    b.division
+                )
+                ||
+                a.person.name.localeCompare(
+                    b.person.name
+                )
+        );
+
+}
+
+
+function filterReport(){
+
+    const rows =
+        getFilteredReport();
+
+
+    let totalHadir = 0;
+    let totalUpah = 0;
+    let totalKorve = 0;
+    let total = 0;
+
+
+    rows.forEach(
+        row => {
+
+            totalHadir +=
+                row.hadir;
+
+            totalUpah +=
+                row.upah;
+
+            totalKorve +=
+                Number(
+                    row.person.korve
+                ) || 0;
+
+            total +=
+                row.total;
+
+        }
+    );
+
+
+    document.getElementById(
+        "reportSummary"
+    ).innerHTML = `
+
+    <div class="card stat">
+
+        <small>
+            Jumlah Relawan
+        </small>
+
+        <strong>
+            ${number(
+                rows.length
+            )}
+        </strong>
+
+    </div>
+
+
+    <div class="card stat">
+
+        <small>
+            Total Hari Hadir
+        </small>
+
+        <strong>
+            ${number(
+                totalHadir
+            )}
+        </strong>
+
+    </div>
+
+
+    <div class="card stat">
+
+        <small>
+            Total Upah
+        </small>
+
+        <strong>
+            ${money(
+                totalUpah
+            )}
+        </strong>
+
+    </div>
+
+
+    <div class="card stat">
+
+        <small>
+            Total Pembayaran
+        </small>
+
+        <strong>
+            ${money(
+                total
+            )}
+        </strong>
+
+    </div>
+
+    `;
+
+
+    let html = "";
+
+    let lastDivision = "";
+
+
+    rows.forEach(
+        row => {
+
+            if(
+                row.division !==
+                lastDivision
+            ){
+
+                lastDivision =
+                    row.division;
+
+
+                html += `
+
+                <tr
+                    class="division-row"
+                >
+
+                    <td
+                        colspan="9"
+                    >
+
+                        DIVISI
+                        ${esc(
+                            row.division
+                        )}
+
+                    </td>
+
+                </tr>
+
+                `;
+
+            }
+
+
+            html += `
+
+            <tr>
+
+                <td>
+                    ${row.index+1}
+                </td>
+
+                <td>
+                    <b>
+                        ${esc(
+                            row.person.name
+                        )}
+                    </b>
+                </td>
+
+                <td>
+                    ${esc(
+                        row.person.jabatan
+                    )}
+                </td>
+
+                <td>
+                    ${row.hadir}
+                </td>
+
+                <td>
+                    ${money(
+                        row.person.tarif
+                    )}
+                </td>
+
+                <td>
+                    ${money(
+                        row.upah
+                    )}
+                </td>
+
+                <td>
+                    ${money(
+                        row.person.korve
+                    )}
+                </td>
+
+                <td>
+                    <b>
+                        ${money(
+                            row.total
+                        )}
+                    </b>
+                </td>
+
+                <td>
+
+                    <button
+                        class="btn small primary"
+                        onclick="printOneSlip(${row.index})"
+                    >
+                        Cetak Slip
+                    </button>
+
+                </td>
+
+            </tr>
+
+            `;
+
+        }
+    );
+
+
+    document.getElementById(
+        "reportBody"
+    ).innerHTML =
+        html ||
+        `
+
+        <tr>
+
+            <td
+                colspan="9"
+                class="empty"
+            >
+                Tidak ada data.
+            </td>
+
+        </tr>
+
+        `;
+
+
+    document.getElementById(
+        "reportFoot"
+    ).innerHTML = `
+
+    <tr
+        style="
+            background:#eff6ff;
+            font-weight:900
+        "
+    >
+
+        <td colspan="3">
+
+            TOTAL KESELURUHAN
+
+        </td>
+
+        <td>
+            ${number(
+                totalHadir
+            )}
+        </td>
+
+        <td></td>
+
+        <td>
+            ${money(
+                totalUpah
+            )}
+        </td>
+
+        <td>
+            ${money(
+                totalKorve
+            )}
+        </td>
+
+        <td>
+            ${money(
+                total
+            )}
+        </td>
+
+        <td></td>
+
+    </tr>
+
+    `;
+
+}
+
+
+function printReport(){
+
+    const rows =
+        getFilteredReport();
+
+
+    const paper =
+        "A4";
+
+
+    const win =
+        window.open(
+            "",
+            "_blank"
+        );
+
+
+    if(!win){
+
+        alert(
+            "Izinkan popup."
+        );
+
+        return;
+
+    }
+
+
+    let body = "";
+
+
+    rows.forEach(
+        row => {
+
+            body += `
+
+            <tr>
+
+                <td>
+                    ${row.index+1}
+                </td>
+
+                <td>
+                    ${esc(
+                        row.person.name
+                    )}
+                </td>
+
+                <td>
+                    ${esc(
+                        row.person.jabatan
+                    )}
+                </td>
+
+                <td>
+                    ${row.hadir}
+                </td>
+
+                <td>
+                    ${money(
+                        row.person.tarif
+                    )}
+                </td>
+
+                <td>
+                    ${money(
+                        row.upah
+                    )}
+                </td>
+
+                <td>
+                    ${money(
+                        row.person.korve
+                    )}
+                </td>
+
+                <td>
+                    ${money(
+                        row.total
+                    )}
+                </td>
+
+            </tr>
+
+            `;
+
+        }
+    );
+
+
+    win.document.write(`
+
+    <!DOCTYPE html>
+
+    <html>
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <title>
+            Laporan Rekap SPPG
+        </title>
+
+        <style>
+
+            @page{
+                size:A4 landscape;
+                margin:10mm;
+            }
+
+            body{
+                font-family:Arial;
+                font-size:10px;
+            }
+
+            h2,
+            p{
+                text-align:center;
+            }
+
+            table{
+                width:100%;
+                border-collapse:collapse;
+                margin-top:15px;
+            }
+
+            th,
+            td{
+                border:1px solid #555;
+                padding:5px;
+            }
+
+            th{
+                background:#eee;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <h2>
+            BADAN GIZI NASIONAL
+        </h2>
+
+        <p>
+            SATUAN PELAYANAN PEMENUHAN GIZI (SPPG) CIKASO
+        </p>
+
+        <h2>
+            LAPORAN / REKAP SELURUH KARYAWAN
+        </h2>
+
+        <p>
+            Periode:
+            ${getPeriodText()}
+        </p>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Jabatan</th>
+                    <th>Hadir</th>
+                    <th>Tarif/Hari</th>
+                    <th>Upah</th>
+                    <th>Korve/GC</th>
+                    <th>Total</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                ${body}
+
+            </tbody>
+
+        </table>
+
+
+        <p
+            style="
+                text-align:right;
+                margin-top:30px
+            "
+        >
+
+            Kepala SPPG Cikaso
+
+            <br><br><br>
+
+            <b>
+                <u>
+                    Irwan Sofyan,S.IP
+                </u>
+            </b>
+
+            <br>
+
+            NIP.
+            199705242026211020
+
+        </p>
+
+    </body>
+
+    </html>
+
+    `);
+
+
+    win.document.close();
+
+
+    setTimeout(
+        () => {
+
+            win.focus();
+
+            win.print();
+
+        },
+        500
+    );
+
+}
+
+
+/* ======================================================
+   CSV
+   ====================================================== */
+
+function exportReportCSV(){
+
+    const rows =
+        getFilteredReport();
+
+
+    const quote =
+        value =>
+            '"' +
+            String(
+                value ?? ""
+            ).replace(
+                /"/g,
+                '""'
+            ) +
+            '"';
+
+
+    const data = [
+
+        [
+            "Laporan / Rekap SPPG Cikaso"
+        ],
+
+        [
+            "Periode",
+            getPeriodText()
+        ],
+
+        [
+            "No",
+            "Divisi",
+            "Nama",
+            "Jabatan",
+            "Hadir",
+            "Tarif/Hari",
+            "Upah",
+            "Korve/GC",
+            "Total Gaji"
+        ],
+
+        ...rows.map(
+            row => [
+
+                row.index+1,
+
+                row.division,
+
+                row.person.name,
+
+                row.person.jabatan,
+
+                row.hadir,
+
+                row.person.tarif,
+
+                row.upah,
+
+                row.person.korve,
+
+                row.total
+
+            ]
+        )
+
+    ];
+
+
+    const blob =
+        new Blob(
+            [
+                "\ufeff" +
+                data
+                    .map(
+                        row =>
+                            row.map(
+                                quote
+                            ).join(";")
+                    )
+                    .join("\r\n")
+            ],
+            {
+                type:
+                    "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+    a.href = url;
+
+    a.download =
+        "laporan_sppg_cikaso_" +
+        db.periodeStart +
+        "_" +
+        db.periodeEnd +
+        ".csv";
+
+    a.click();
+
+
+    setTimeout(
+        () =>
+            URL.revokeObjectURL(
+                url
+            ),
+        1000
+    );
+
+}
+
+
+/* ======================================================
+   BACKUP
+   ====================================================== */
+
+function exportJSON(){
+
+    const blob =
+        new Blob(
+            [
+                JSON.stringify(
+                    db,
+                    null,
+                    2
+                )
+            ],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+    a.href = url;
+
+    a.download =
+        "backup_sppg_cikaso.json";
+
+    a.click();
+
+
+    setTimeout(
+        () =>
+            URL.revokeObjectURL(
+                url
+            ),
+        1000
+    );
+
+}
+
+
+/* ======================================================
+   RESET
+   ====================================================== */
+
+function resetData(){
+
+    if(
+        !confirm(
+            "Reset data lokal ke kondisi awal?"
+        )
+    )
+        return;
+
+
+    db =
+        JSON.parse(
+            JSON.stringify(
+                DEFAULT_DATA
+            )
+        );
+
+
+    save();
+
+    showPage(
+        "dashboard"
+    );
+
+
+    showToast(
+        "✓ Data berhasil direset."
+    );
+
+}
+
+
+/* ======================================================
+   START
+   ====================================================== */
+
+showPage(
+    "dashboard"
+);
+
+setTimeout(
+    initFirebase,
+    100
+);
+
+</script>
+
 </body>
 </html>
