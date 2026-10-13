@@ -452,9 +452,9 @@ function fillGaji(arr){document.getElementById('gBody').innerHTML=arr.map(p=>{co
 function filterGaji(){const q=document.getElementById('gSearch').value.toLowerCase();fillGaji(db.people.filter(p=>p.name.toLowerCase().includes(q)))}
 // Tanda tangan statis dari folder GitHub Pages.
 // URL dibuat absolut karena slip dicetak melalui jendela baru (popup).
-// Nama file harus cocok: contoh nama "Yudianto" -> /ttd/yudianto.png
+// Nama file harus cocok: contoh nama "Yudianto" -> /ttg/yudianto.png
 function signatureSrc(p){
-  // Nama file aktual pada repositori GitHub: /ttd/*.png
+  // Nama file aktual pada repositori GitHub: /ttg/*.png
   const key=String(p?.name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
   const files={
     'akbar-khoerul-p':'akbar-khoerul-p.png',
@@ -465,11 +465,11 @@ function signatureSrc(p){
     'yudianto':'yudianto.png'
   };
   const filename=files[key] || (key ? key+'.png' : '');
-  return filename ? new URL('ttd/'+filename, 'https://ardifmh.github.io/').href : '';
+  return filename ? 'https://ardifmh.github.io/rekap/ttg/' + encodeURIComponent(filename) : '';
 }
 function signatureImg(p){
   const src=signatureSrc(p);
-  return src ? `<img class="employee-signature" src="${esc(src)}" alt="Tanda tangan ${esc(p.name)}" onerror="this.alt='Tanda tangan tidak ditemukan: ${esc(p.name)}';this.style.display='none'">` : '';
+  return src ? `<img class="employee-signature" src="${esc(src)}" alt="Tanda tangan ${esc(p.name)}" onerror="this.alt='Gambar tanda tangan tidak ditemukan: ${esc(p.name)}';this.style.width='auto';this.style.height='auto';this.style.maxWidth='100%';this.style.display='inline-block'">` : '';
 }
 function slipHTML(p){
  const tgl=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
