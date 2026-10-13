@@ -450,16 +450,26 @@ function renderGaji(){
 }
 function fillGaji(arr){document.getElementById('gBody').innerHTML=arr.map(p=>{const i=db.people.indexOf(p);return `<tr><td>${i+1}</td><td><b>${esc(p.name)}</b></td><td>${esc(p.jabatan)}</td><td><span class="badge ok">${hadir(p)} hari</span></td><td>${money(p.tarif)}</td><td>${money(upah(p))}</td><td>${money(p.korve)}</td><td><b>${money(total(p))}</b></td><td><button class="btn small primary" onclick="printSlip(${i},getPaperSize())">Cetak Slip</button></td></tr>`}).join('')}
 function filterGaji(){const q=document.getElementById('gSearch').value.toLowerCase();fillGaji(db.people.filter(p=>p.name.toLowerCase().includes(q)))}
-// Tanda tangan statis dari folder GitHub Pages: ttd/nama-karyawan.png
-// Contoh: ttd/yudianto.png. signatureUrl lama tetap dipakai jika tersedia.
+// Tanda tangan statis dari folder GitHub Pages.
+// URL dibuat absolut karena slip dicetak melalui jendela baru (popup).
+// Nama file harus cocok: contoh nama "Yudianto" -> /ttd/yudianto.png
 function signatureSrc(p){
-  if(p && p.signatureUrl) return p.signatureUrl;
+  // Nama file aktual pada repositori GitHub: /ttd/*.png
   const key=String(p?.name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
-  return key ? `ttd/${key}.png` : '';
+  const files={
+    'akbar-khoerul-p':'akbar-khoerul-p.png',
+    'andries-yonathan':'andries-yonathan.png',
+    'fajar-afriansyah':'fajar-afriansyah.png',
+    'fakhi-afriana':'fakhi-afriana.png',
+    'widianto':'widianto.png',
+    'yudianto':'yudianto.png'
+  };
+  const filename=files[key] || (key ? key+'.png' : '');
+  return filename ? new URL('ttd/'+filename, 'https://ardifmh.github.io/').href : '';
 }
 function signatureImg(p){
   const src=signatureSrc(p);
-  return src ? `<img class="employee-signature" src="${esc(src)}" alt="Tanda tangan ${esc(p.name)}" onerror="this.style.display='none'">` : '';
+  return src ? `<img class="employee-signature" src="${esc(src)}" alt="Tanda tangan ${esc(p.name)}" onerror="this.alt='Tanda tangan tidak ditemukan: ${esc(p.name)}';this.style.display='none'">` : '';
 }
 function slipHTML(p){
  const tgl=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
@@ -612,7 +622,19 @@ html,body{margin:0!important;padding:0!important;width:100%;background:#fff;colo
 <body>${body}</body>
 </html>`);
   w.document.close();
-  setTimeout(()=>{ w.focus(); w.print(); },700);
+  // Tunggu logo dan tanda tangan selesai dimuat sebelum dialog cetak dibuka.
+  const waitForImages = () => {
+    const imgs = Array.from(w.document.images);
+    return Promise.all(imgs.map(img => {
+      if (img.complete) return Promise.resolve();
+      return new Promise(resolve => {
+        img.onload = resolve;
+        img.onerror = resolve; // Jangan menggantung jika satu gambar tidak ditemukan.
+        setTimeout(resolve, 5000);
+      });
+    }));
+  };
+  waitForImages().then(() => setTimeout(() => { w.focus(); w.print(); }, 250));
 }
 
 function reportRows(){return db.people.map((p,i)=>({p,i,division:(typeof getDivisi==='function'?getDivisi(p):p.jabatan||'LAINNYA'),h:hadir(p),w:upah(p),t:total(p)}))}
