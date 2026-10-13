@@ -234,9 +234,35 @@ function renderDash(){
  <div class="card stat"><small>Total Pembayaran</small><strong>${money(totalPay)}</strong></div>
  <div class="card stat"><small>Periode</small><strong style="font-size:15px">${period()}</strong></div></div>
  <div class="section card"><h2>Alur Otomatis</h2><div class="note">Isi atau ubah absensi di <b>Rekap Absensi</b>. Total hadir, upah harian, korve/GC, total gaji, dan <b>Slip Gaji</b> akan mengikuti otomatis. Data tersimpan di browser komputer ini.</div></div>
- <div class="section card"><h2>Periode</h2><div class="toolbar"><label>Mulai <input type="date" id="pStart" value="${db.periodeStart}"></label><label>Selesai <input type="date" id="pEnd" value="${db.periodeEnd}"></label><button class="btn primary" onclick="setPeriod()">Simpan Periode</button></div></div>`;
+ <div class="section card"><h2>Atur Periode Aktif</h2><div class="toolbar"><label>Mulai <input type="date" id="pStart" value="${db.periodeStart}"></label><label>Selesai <input type="date" id="pEnd" value="${db.periodeEnd}"></label><button class="btn primary" onclick="setPeriod()">Simpan Periode</button></div></div>
+ <div class="section card"><h2>Daftar Periode Tersimpan</h2><div class="toolbar"><input id="dashboardPeriodSearch" placeholder="Cari periode atau tanggal..." oninput="dashboardPeriodPage=1;fillDashboardPeriods()" aria-label="Cari periode"><label>Tampilkan <select id="dashboardPeriodPageSize" onchange="dashboardPeriodPage=1;fillDashboardPeriods()"><option value="5" selected>5 baris</option><option value="10">10 baris</option><option value="20">20 baris</option><option value="50">50 baris</option></select></label><span id="dashboardPeriodCount" style="align-self:center;color:var(--muted);font-size:13px"></span></div><div class="tablewrap"><table class="table"><thead><tr><th>Periode</th><th>Jumlah Relawan</th><th>Total Pembayaran</th><th>Aksi</th></tr></thead><tbody id="dashboardPeriodBody"></tbody></table></div><div id="dashboardPeriodPagination" class="toolbar" style="margin-top:12px;justify-content:space-between;align-items:center"></div><div class="note" style="margin-top:8px">Edit akan membuka periode tersimpan pada menu Rekap Absensi. Hapus hanya menghapus catatan periode dari riwayat.</div></div>`;
+ fillDashboardPeriods();
 }
-function setPeriod(){db.periodeStart=document.getElementById('pStart').value;db.periodeEnd=document.getElementById('pEnd').value;save();renderDash()}
+let dashboardPeriodPage=1;
+function dashboardPeriodData(){
+ const histories=(db.periodHistory||[]).filter(h=>h&&h.start&&h.end).sort((a,b)=>String(b.start).localeCompare(String(a.start)));
+ const currentByName=new Map((db.people||[]).map(p=>[p.name,p]));
+ return histories.map(h=>{
+   const people=h.people||[];
+   const payment=people.reduce((sum,old)=>{const live=currentByName.get(old.name)||{};const days=(old.days||[]).reduce((a,v)=>a+(v===1?1:0),0);const tarif=Number(old.tarif??live.tarif)||0;const korve=Number(old.korve??live.korve)||0;return sum+days*tarif+korve;},0);
+   return {h,people,payment,key:periodKey(h.start,h.end),label:fmtDate(h.start)+' — '+fmtDate(h.end)};
+ });
+}
+function fillDashboardPeriods(){
+ const body=document.getElementById('dashboardPeriodBody');if(!body)return;
+ const query=(document.getElementById('dashboardPeriodSearch')?.value||'').trim().toLowerCase();
+ const size=Math.max(5,Number(document.getElementById('dashboardPeriodPageSize')?.value)||5);
+ const all=dashboardPeriodData();
+ const filtered=all.filter(x=>(x.label+' '+x.h.start+' '+x.h.end+' '+x.people.length+' '+x.payment).toLowerCase().includes(query));
+ const pages=Math.max(1,Math.ceil(filtered.length/size));dashboardPeriodPage=Math.min(Math.max(1,dashboardPeriodPage),pages);
+ const first=(dashboardPeriodPage-1)*size;const shown=filtered.slice(first,first+size);
+ body.innerHTML=shown.length?shown.map(x=>`<tr><td><b>${esc(x.label)}</b></td><td>${num(x.people.length)} relawan</td><td><b>${money(x.payment)}</b></td><td><button class="btn small" onclick="editDashboardPeriod('${x.key}')">Edit</button> <button class="btn small danger" onclick="deleteDashboardPeriod('${x.key}')">Hapus</button></td></tr>`).join(''):'<tr><td colspan="4" class="empty">'+(all.length?'Tidak ada periode yang cocok dengan pencarian.':'Belum ada periode tersimpan. Periode akan masuk ke daftar saat Anda menyimpan periode baru.')+'</td></tr>';
+ const count=document.getElementById('dashboardPeriodCount');if(count)count.textContent=filtered.length?`Menampilkan ${first+1}–${Math.min(first+size,filtered.length)} dari ${filtered.length} periode`:`0 periode ditemukan`;
+ const pager=document.getElementById('dashboardPeriodPagination');if(pager){pager.innerHTML=`<span style="font-size:13px;color:var(--muted)">Halaman ${dashboardPeriodPage} dari ${pages}</span><div class="actions"><button class="btn small" ${dashboardPeriodPage<=1?'disabled':''} onclick="dashboardPeriodPage--;fillDashboardPeriods()">‹ Sebelumnya</button><button class="btn small" ${dashboardPeriodPage>=pages?'disabled':''} onclick="dashboardPeriodPage++;fillDashboardPeriods()">Berikutnya ›</button></div>`;}
+}
+function editDashboardPeriod(k){loadSavedPeriod(k);showPage('absensi')}
+function deleteDashboardPeriod(k){const h=(db.periodHistory||[]).find(x=>periodKey(x.start,x.end)===k);if(!h)return;if(!confirm('Hapus riwayat periode '+fmtDate(h.start)+' — '+fmtDate(h.end)+'? Data absensi periode aktif tidak akan dihapus.'))return;db.periodHistory=db.periodHistory.filter(x=>periodKey(x.start,x.end)!==k);save();renderDash();showToast('✓ Riwayat periode dihapus')}
+function setPeriod(){const s=document.getElementById('pStart').value,e=document.getElementById('pEnd').value;if(!s||!e)return alert('Tanggal mulai dan selesai wajib diisi.');if(e<s)return alert('Periode tidak valid: tanggal selesai tidak boleh sebelum tanggal mulai.');rememberPeriod();db.periodeStart=s;db.periodeEnd=e;save();renderDash()}
 function divisionOf(job){const j=String(job||'').toLowerCase();if(j.includes('persiapan'))return'PERSIAPAN';if(j.includes('pengolahan'))return'PENGOLAHAN';if(j.includes('pemorsian'))return'PEMORSIAN';if(j.includes('distribusi'))return'DISTRIBUSI';if(j.includes('pencucian'))return'PENCUCIAN';if(j.includes('security'))return'SECURITY';if(j.includes('kebersihan'))return'KEBERSIHAN';if(j.includes('asisten'))return'ASISTEN LAPANGAN';return'LAINNYA'}
 function renderRelawan(){
  document.getElementById('content').innerHTML=`<div class="toolbar"><input id="search" placeholder="Cari nama atau jabatan..." oninput="filterRelawan()"><select id="divisionFilter" onchange="filterRelawan()"><option value="">Semua Divisi</option>${[...new Set(db.people.map(p=>divisionOf(p.jabatan)))].sort().map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join('')}</select><button class="btn primary" onclick="openAdd()">+ Tambah Relawan</button></div><div class="note" style="margin-bottom:12px">Daftar relawan sudah dipisahkan berdasarkan <b>DIVISI</b> agar lebih mudah disortir dan dicari.</div><div class="tablewrap"><table class="table"><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Tarif/Hari</th><th>Korve/GC</th><th>Tanda Tangan</th><th>Aksi</th></tr></thead><tbody id="relBody"></tbody></table></div>`;
@@ -383,7 +409,7 @@ async function savePerson(){
 function delPerson(i){if(confirm('Hapus '+db.people[i].name+'?')){db.people.splice(i,1);save();renderRelawan()}}
 
 function periodKey(s,e){return s+'|'+e}
-function snapshotCurrentPeriod(){return {start:db.periodeStart,end:db.periodeEnd,savedAt:new Date().toISOString(),people:db.people.map(p=>({name:p.name,days:[...(p.days||[])],reasons:[...(p.reasons||[])]}))}}
+function snapshotCurrentPeriod(){return {start:db.periodeStart,end:db.periodeEnd,savedAt:new Date().toISOString(),people:db.people.map(p=>({name:p.name,jabatan:p.jabatan,tarif:Number(p.tarif)||0,korve:Number(p.korve)||0,days:[...(p.days||[])],reasons:[...(p.reasons||[])]}))}}
 function rememberPeriod(){const snap=snapshotCurrentPeriod();db.periodHistory=Array.isArray(db.periodHistory)?db.periodHistory:[];const k=periodKey(snap.start,snap.end);const idx=db.periodHistory.findIndex(x=>periodKey(x.start,x.end)===k);if(idx>=0)db.periodHistory[idx]=snap;else db.periodHistory.unshift(snap);db.periodHistory=db.periodHistory.slice(0,24)}
 function renderAbsensi(){
  const isDefault=db.periodeStart==='2026-09-13'&&db.periodeEnd==='2026-09-25';
