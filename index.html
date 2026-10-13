@@ -42,6 +42,7 @@ button,input,select{font:inherit}button{cursor:pointer;border:0}.app{display:fle
   <input id="fSignature" type="file" accept="image/png,image/jpeg,image/webp">
   <small style="display:block;margin-top:5px;color:#64748b;font-weight:500">PNG/JPG/WebP. Sebaiknya tanda tangan berlatar putih/transparan.</small>
   <div id="signaturePreview" style="margin-top:8px;display:none;padding:8px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;text-align:center"><img id="signaturePreviewImg" alt="Pratinjau tanda tangan" style="max-width:220px;max-height:70px;object-fit:contain"></div>
+  <div id="signatureUploadStatus" style="display:none;margin-top:8px;font-size:12px;color:#475569"><div id="signatureUploadText">Menyiapkan gambar...</div><div style="height:7px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-top:5px"><div id="signatureUploadBar" style="height:100%;width:0%;background:#1769e0;transition:width .15s"></div></div></div>
 </label>
 </div><div class="modalfoot"><button class="btn" onclick="closeModal()">Batal</button><button class="btn primary" onclick="savePerson()">Simpan</button></div></div></div>
 
@@ -268,7 +269,7 @@ function setupSignatureInput(){
     pendingSignatureFile=file||null;
     if(file){
       if(!file.type.startsWith('image/')){alert('File tanda tangan harus berupa gambar.');f.value='';pendingSignatureFile=null;return;}
-      if(file.size>2*1024*1024){alert('Ukuran tanda tangan maksimal 2 MB.');f.value='';pendingSignatureFile=null;return;}
+      if(file.size>10*1024*1024){alert('Ukuran gambar maksimal 10 MB. Gambar akan dikecilkan otomatis sebelum diunggah.');f.value='';pendingSignatureFile=null;return;}
       const reader=new FileReader();
       reader.onload=e=>showSignaturePreview(e.target.result);
       reader.readAsDataURL(file);
@@ -297,13 +298,47 @@ function openEdit(i){
   setupSignatureInput();
 }
 function closeModal(){document.getElementById('modal').classList.remove('show');pendingSignatureFile=null}
+// Kompres tanda tangan di browser agar unggahan lebih cepat.
+async function compressSignatureImage(file){
+  const imageURL=URL.createObjectURL(file);
+  try{
+    const img=await new Promise((resolve,reject)=>{
+      const im=new Image(); im.onload=()=>resolve(im); im.onerror=()=>reject(new Error('Gambar tidak dapat dibaca.')); im.src=imageURL;
+    });
+    const maxW=1000, maxH=500, scale=Math.min(1,maxW/img.naturalWidth,maxH/img.naturalHeight);
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));
+    canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+    const ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0,canvas.width,canvas.height);
+    // WebP biasanya jauh lebih kecil dan tetap mendukung latar transparan.
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',0.82));
+    if(!blob) throw new Error('Gagal mengoptimalkan gambar.');
+    return new File([blob],(file.name.replace(/\.[^.]+$/,'')||'tanda-tangan')+'.webp',{type:'image/webp',lastModified:Date.now()});
+  }finally{URL.revokeObjectURL(imageURL)}
+}
+function setSignatureProgress(percent,message){
+  const box=document.getElementById('signatureUploadStatus');
+  const bar=document.getElementById('signatureUploadBar');
+  const txt=document.getElementById('signatureUploadText');
+  if(box)box.style.display='block'; if(bar)bar.style.width=Math.max(0,Math.min(100,percent))+'%'; if(txt)txt.textContent=message||('Mengunggah '+Math.round(percent)+'%');
+}
 async function uploadSignature(file, person){
   if(!file || !firebaseReady || !firebaseStorage || !firebaseUser) return person.signatureUrl||'';
-  const ext=(file.name.split('.').pop()||'png').toLowerCase().replace(/[^a-z0-9]/g,'');
-  const path='tandaTanganRelawan/'+person.id+'.'+(ext||'png');
+  setSignatureProgress(2,'Mengoptimalkan gambar tanda tangan...');
+  const optimized=await compressSignatureImage(file);
+  const path='tandaTanganRelawan/'+person.id+'.webp';
   const ref=firebaseStorage.ref().child(path);
-  const snap=await ref.put(file,{contentType:file.type||'image/png',cacheControl:'public,max-age=31536000'});
-  return await snap.ref.getDownloadURL();
+  setSignatureProgress(5,'Mengunggah 5%...');
+  const task=ref.put(optimized,{contentType:'image/webp',cacheControl:'public,max-age=31536000'});
+  const downloadURL=await new Promise((resolve,reject)=>{
+    task.on('state_changed',snap=>{
+      const pct=snap.totalBytes?Math.round(snap.bytesTransferred/snap.totalBytes*100):0;
+      setSignatureProgress(pct,`Mengunggah tanda tangan ${pct}% (${Math.ceil(snap.bytesTransferred/1024)} KB dari ${Math.ceil(snap.totalBytes/1024)} KB)`);
+    },reject,async()=>{
+      try{setSignatureProgress(100,'Upload selesai. Menyimpan alamat gambar...');resolve(await task.snapshot.ref.getDownloadURL())}catch(e){reject(e)}
+    });
+  });
+  return downloadURL;
 }
 async function savePerson(){
   const name=document.getElementById('fName').value.trim();
@@ -327,18 +362,20 @@ async function savePerson(){
         alert('Firebase Storage belum terhubung. Aktifkan Firebase Storage agar tanda tangan dapat disimpan dan digunakan saat cetak.');
         return;
       }
-      if(btn){btn.disabled=true;btn.textContent='Mengunggah...';}
+      if(btn){btn.disabled=true;btn.textContent='Mengunggah 0%...';}
       obj.signatureUrl=await uploadSignature(file,obj);
+      if(btn)btn.textContent='Menyimpan data...';
     }
     if(editIndex<0)db.people.push(obj);
     else db.people[editIndex]=obj;
     save();
     closeModal();
     renderRelawan();
+    const upBox=document.getElementById('signatureUploadStatus');if(upBox)upBox.style.display='none';
     showToast('✓ Data relawan dan tanda tangan tersimpan');
   }catch(e){
     console.error(e);
-    alert('Tanda tangan gagal diunggah. Pastikan Firebase Storage sudah aktif dan rules mengizinkan upload.');
+    alert('Tanda tangan gagal diunggah. Periksa koneksi internet, Firebase Storage, dan Storage Rules. Detail: '+(e?.message||'kesalahan tidak diketahui'));
   }finally{
     if(btn){btn.disabled=false;btn.textContent='Simpan';}
   }
@@ -413,6 +450,17 @@ function renderGaji(){
 }
 function fillGaji(arr){document.getElementById('gBody').innerHTML=arr.map(p=>{const i=db.people.indexOf(p);return `<tr><td>${i+1}</td><td><b>${esc(p.name)}</b></td><td>${esc(p.jabatan)}</td><td><span class="badge ok">${hadir(p)} hari</span></td><td>${money(p.tarif)}</td><td>${money(upah(p))}</td><td>${money(p.korve)}</td><td><b>${money(total(p))}</b></td><td><button class="btn small primary" onclick="printSlip(${i},getPaperSize())">Cetak Slip</button></td></tr>`}).join('')}
 function filterGaji(){const q=document.getElementById('gSearch').value.toLowerCase();fillGaji(db.people.filter(p=>p.name.toLowerCase().includes(q)))}
+// Tanda tangan statis dari folder GitHub Pages: ttd/nama-karyawan.png
+// Contoh: ttd/yudianto.png. signatureUrl lama tetap dipakai jika tersedia.
+function signatureSrc(p){
+  if(p && p.signatureUrl) return p.signatureUrl;
+  const key=String(p?.name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  return key ? `ttd/${key}.png` : '';
+}
+function signatureImg(p){
+  const src=signatureSrc(p);
+  return src ? `<img class="employee-signature" src="${esc(src)}" alt="Tanda tangan ${esc(p.name)}" onerror="this.style.display='none'">` : '';
+}
 function slipHTML(p){
  const tgl=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
  const h=hadir(p), up=upah(p), kv=Number(p.korve)||0, ttl=total(p);
@@ -431,7 +479,7 @@ function slipHTML(p){
    <div class="receipt-total"><b>Total Penerimaan</b><strong>${money(ttl)}</strong></div>
    <div class="receipt-words">${terbilang(ttl)}</div>
    <div class="receipt-signatures">
-     <div class="signature-col"><div>Penerima</div><div class="signature-space">${p.signatureUrl?`<img class="employee-signature" src="${esc(p.signatureUrl)}" alt="Tanda tangan ${esc(p.name)}">`:''}</div><b>${esc(p.name)}</b><span>Karyawan</span></div>
+     <div class="signature-col"><div>Penerima</div><div class="signature-space">${signatureImg(p)}</div><b>${esc(p.name)}</b><span>Karyawan</span></div>
      <div class="signature-col"><div>Mengetahui</div><div class="signature-space"></div><b>Ika Cahyani, S.Ak</b><span>Akuntan</span></div>
      <div class="signature-col"><div>Menyetujui</div><div class="signature-space"></div><b>Irwan Sofyan,S.IP</b><span>Kepala SPPG</span></div>
    </div>
@@ -453,7 +501,7 @@ function dailySlipHTML(p,dateStr){
    <div class="receipt-head"><div class="receipt-logo"><img src="__LOGO__" alt="Logo BGN"></div><div class="receipt-org"><b>SATUAN PELAYANAN PEMENUHAN GIZI</b><strong>CIKASO, KAB. CIAMIS</strong></div><div class="receipt-title"><b>BUKTI UPAH HARIAN RELAWAN</b><div>Tanggal&nbsp;&nbsp; <strong>${esc(dateLabel)}</strong></div><div>Status&nbsp;&nbsp; <strong>${esc(status)}</strong></div></div></div>
    <div class="receipt-info"><div><span>Nama</span><i>:</i><b>${esc(p.name)}</b></div><div><span>Jabatan</span><i>:</i><b>${esc(p.jabatan)}</b></div><div><span>Tarif Harian</span><i>:</i><b>${money(Number(p.tarif)||0)}</b></div><div><span>Status Hadir</span><i>:</i><b>${esc(status)}</b></div></div>
    <div class="receipt-total"><b>Total Upah Hari Ini</b><strong>${money(dailyPay)}</strong></div><div class="receipt-words">${terbilang(dailyPay)}</div>
-   <div class="receipt-signatures"><div class="signature-col"><div>Penerima</div><div class="signature-space">${p.signatureUrl?`<img class="employee-signature" src="${esc(p.signatureUrl)}" alt="Tanda tangan ${esc(p.name)}">`:''}</div><b>${esc(p.name)}</b><span>Karyawan</span></div><div class="signature-col"><div>Mengetahui</div><div class="signature-space"></div><b>Ika Cahyani, S.Ak</b><span>Akuntan</span></div><div class="signature-col"><div>Menyetujui</div><div class="signature-space"></div><b>Irwan Sofyan,S.IP</b><span>Kepala SPPG</span></div></div>
+   <div class="receipt-signatures"><div class="signature-col"><div>Penerima</div><div class="signature-space">${signatureImg(p)}</div><b>${esc(p.name)}</b><span>Karyawan</span></div><div class="signature-col"><div>Mengetahui</div><div class="signature-space"></div><b>Ika Cahyani, S.Ak</b><span>Akuntan</span></div><div class="signature-col"><div>Menyetujui</div><div class="signature-space"></div><b>Irwan Sofyan,S.IP</b><span>Kepala SPPG</span></div></div>
  </div>`.replace('__LOGO__',LOGO_DATA)
 }
 function printDailySlips(paper='A4'){
