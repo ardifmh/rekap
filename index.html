@@ -516,8 +516,8 @@ function slipHTML(p){
    <div class="receipt-words">${terbilang(ttl)}</div>
    <div class="receipt-signatures">
      <div class="signature-col"><div>Penerima</div><div class="signature-space">${signatureImg(p)}</div><b>${esc(p.name)}</b><span>Karyawan</span></div>
-     <div class="signature-col"><div>Mengetahui</div><div class="signature-space"></div><b>Ika Cahyani, S.Ak</b><span>Akuntan</span></div>
-     <div class="signature-col"><div>Menyetujui</div><div class="signature-space"></div><b>Irwan Sofyan,S.IP</b><span>Kepala SPPG</span></div>
+     <div class="signature-col"><div>Mengetahui</div><div class="signature-space manager-signature-space"><img class="manager-signature" src="https://ardifmh.github.io/rekap/ttg/ika-cahyani.png" alt="Tanda tangan Ika Cahyani" onerror="this.style.display='none'"></div><b>Ika Cahyani, S.Ak</b><span>Akuntan</span></div>
+     <div class="signature-col"><div>Menyetujui</div><div class="signature-space manager-signature-space"><img class="manager-signature" src="https://ardifmh.github.io/rekap/ttg/irwan-sopyan.png" alt="Tanda tangan Irwan Sopyan" onerror="this.style.display='none'"></div><b>Irwan Sofyan,S.IP</b><span>Kepala SPPG</span></div>
    </div>
  </div>`.replace('__LOGO__',LOGO_DATA)
 }
@@ -537,7 +537,7 @@ function dailySlipHTML(p,dateStr){
    <div class="receipt-head"><div class="receipt-logo"><img src="__LOGO__" alt="Logo BGN"></div><div class="receipt-org"><b>SATUAN PELAYANAN PEMENUHAN GIZI</b><strong>CIKASO, KAB. CIAMIS</strong></div><div class="receipt-title"><b>BUKTI UPAH HARIAN RELAWAN</b><div>Tanggal&nbsp;&nbsp; <strong>${esc(dateLabel)}</strong></div><div>Status&nbsp;&nbsp; <strong>${esc(status)}</strong></div></div></div>
    <div class="receipt-info"><div><span>Nama</span><i>:</i><b>${esc(p.name)}</b></div><div><span>Jabatan</span><i>:</i><b>${esc(p.jabatan)}</b></div><div><span>Tarif Harian</span><i>:</i><b>${money(Number(p.tarif)||0)}</b></div><div><span>Status Hadir</span><i>:</i><b>${esc(status)}</b></div></div>
    <div class="receipt-total"><b>Total Upah Hari Ini</b><strong>${money(dailyPay)}</strong></div><div class="receipt-words">${terbilang(dailyPay)}</div>
-   <div class="receipt-signatures"><div class="signature-col"><div>Penerima</div><div class="signature-space">${signatureImg(p)}</div><b>${esc(p.name)}</b><span>Karyawan</span></div><div class="signature-col"><div>Mengetahui</div><div class="signature-space"></div><b>Ika Cahyani, S.Ak</b><span>Akuntan</span></div><div class="signature-col"><div>Menyetujui</div><div class="signature-space"></div><b>Irwan Sofyan,S.IP</b><span>Kepala SPPG</span></div></div>
+   <div class="receipt-signatures"><div class="signature-col"><div>Penerima</div><div class="signature-space">${signatureImg(p)}</div><b>${esc(p.name)}</b><span>Karyawan</span></div><div class="signature-col"><div>Mengetahui</div><div class="signature-space manager-signature-space"><img class="manager-signature" src="https://ardifmh.github.io/rekap/ttg/ika-cahyani.png" alt="Tanda tangan Ika Cahyani" onerror="this.style.display='none'"></div><b>Ika Cahyani, S.Ak</b><span>Akuntan</span></div><div class="signature-col"><div>Menyetujui</div><div class="signature-space manager-signature-space"><img class="manager-signature" src="https://ardifmh.github.io/rekap/ttg/irwan-sopyan.png" alt="Tanda tangan Irwan Sopyan" onerror="this.style.display='none'"></div><b>Irwan Sofyan,S.IP</b><span>Kepala SPPG</span></div></div>
  </div>`.replace('__LOGO__',LOGO_DATA)
 }
 function printDailySlips(paper='A4'){
@@ -632,6 +632,10 @@ html,body{margin:0!important;padding:0!important;width:100%;background:#fff;colo
 .signature-col{min-width:0}
 .signature-space{height:6mm;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
 .employee-signature{max-width:34mm;max-height:5.5mm;object-fit:contain;display:block}
+/* Tanda tangan pejabat dibuat lebih besar dan sedikit menyentuh nama agar tampak seperti tanda tangan tinta di atas nama. */
+.manager-signature-space{height:8mm;overflow:visible;position:relative;z-index:2}
+.manager-signature{display:block;width:31mm;height:10mm;max-width:100%;object-fit:contain;object-position:center bottom;margin-bottom:-2.2mm;position:relative;z-index:3}
+.signature-col b{position:relative;z-index:1}
 .signature-col b{display:block;font-size:9.8px;text-decoration:underline;white-space:nowrap}
 .signature-col span{display:block;margin-top:.4mm;font-size:9.3px}
 .sliptable{display:none!important}
